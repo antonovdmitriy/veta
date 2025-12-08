@@ -23,8 +23,6 @@ struct HighlightedCodeBlock: View {
     let highlighter = CodeHighlighter()
 
     var body: some View {
-        let _ = print("📦 HighlightedCodeBlock создан! Язык: \(configuration.language ?? "нет")")
-
         VStack(alignment: .leading, spacing: 0) {
             // Заголовок с языком
             if let language = configuration.language, !language.isEmpty {

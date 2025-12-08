@@ -33,7 +33,6 @@ struct FullDocumentView: View {
                 ScrollView {
                     if let content = file.content {
                         Markdown(HTMLToMarkdownConverter.convertHTMLTables(in: content))
-                            .markdownTheme(.gitHub)
                             .markdownTableBorderStyle(.init(color: .secondary))
                             .markdownTableBackgroundStyle(.alternatingRows(.secondary.opacity(0.1), Color.clear))
                             .markdownImageProvider(
@@ -43,6 +42,10 @@ struct FullDocumentView: View {
                                     branch: file.repository?.defaultBranch ?? "main"
                                 )
                             )
+                            .markdownBlockStyle(\.codeBlock) { configuration in
+                                HighlightedCodeBlock(configuration: configuration)
+                            }
+                            .markdownTheme(.gitHub)
                             .environment(\.openURL, OpenURLAction { url in
                                 handleMarkdownLink(url)
                             })
@@ -56,7 +59,6 @@ struct FullDocumentView: View {
                         ForEach(file.sections.sorted(by: { $0.orderIndex < $1.orderIndex })) { section in
                             Section {
                                 Markdown(HTMLToMarkdownConverter.convertHTMLTables(in: section.content))
-                                    .markdownTheme(.gitHub)
                                     .markdownTableBorderStyle(.init(color: .secondary))
                                     .markdownTableBackgroundStyle(.alternatingRows(.secondary.opacity(0.1), Color.clear))
                                     .markdownImageProvider(
@@ -66,6 +68,10 @@ struct FullDocumentView: View {
                                             branch: file.repository?.defaultBranch ?? "main"
                                         )
                                     )
+                                    .markdownBlockStyle(\.codeBlock) { configuration in
+                                        HighlightedCodeBlock(configuration: configuration)
+                                    }
+                                    .markdownTheme(.gitHub)
                                     .environment(\.openURL, OpenURLAction { url in
                                         handleMarkdownLink(url)
                                     })

@@ -232,10 +232,6 @@ struct SectionCardView: View {
                 // Show markdown content
                 ScrollView {
                     Markdown(viewModel.getCurrentContent())
-                        .markdownTheme(.gitHub)
-                        .markdownBlockStyle(\.codeBlock) { configuration in
-                            HighlightedCodeBlock(configuration: configuration)
-                        }
                         .markdownTableBorderStyle(.init(color: .secondary))
                         .markdownTableBackgroundStyle(.alternatingRows(.secondary.opacity(0.1), Color.clear))
                         .markdownImageProvider(
@@ -245,6 +241,10 @@ struct SectionCardView: View {
                                 branch: section.file?.repository?.defaultBranch ?? "main"
                             )
                         )
+                        .markdownBlockStyle(\.codeBlock) { configuration in
+                            HighlightedCodeBlock(configuration: configuration)
+                        }
+                        .markdownTheme(.gitHub)
                         .environment(\.openURL, OpenURLAction { url in
                             handleMarkdownLink(url)
                         })
