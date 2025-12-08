@@ -1,0 +1,655 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		048FE2E82EE620BB001501ED /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 048FE2E72EE620BB001501ED /* MarkdownUI */; };
+		048FE2EA2EE620C1001501ED /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 048FE2E92EE620C1001501ED /* KeychainAccess */; };
+		048FE2F72EE63182001501ED /* Highlightr in Frameworks */ = {isa = PBXBuildFile; productRef = 048FE2F62EE63182001501ED /* Highlightr */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		048FE28E2EE61E08001501ED /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 048FE2782EE61E06001501ED /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 048FE27F2EE61E06001501ED;
+			remoteInfo = mindpalace;
+		};
+		048FE2982EE61E08001501ED /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 048FE2782EE61E06001501ED /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 048FE27F2EE61E06001501ED;
+			remoteInfo = mindpalace;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		048FE2802EE61E06001501ED /* mindpalace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mindpalace.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		048FE28D2EE61E08001501ED /* mindpalaceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mindpalaceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		048FE2972EE61E08001501ED /* mindpalaceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mindpalaceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+/* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedRootGroup section */
+		048FE2822EE61E06001501ED /* mindpalace */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = mindpalace;
+			sourceTree = "<group>";
+		};
+		048FE2902EE61E08001501ED /* mindpalaceTests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = mindpalaceTests;
+			sourceTree = "<group>";
+		};
+		048FE29A2EE61E08001501ED /* mindpalaceUITests */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = mindpalaceUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXFileSystemSynchronizedRootGroup section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		048FE27D2EE61E06001501ED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				048FE2EA2EE620C1001501ED /* KeychainAccess in Frameworks */,
+				048FE2F72EE63182001501ED /* Highlightr in Frameworks */,
+				048FE2E82EE620BB001501ED /* MarkdownUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		048FE28A2EE61E08001501ED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		048FE2942EE61E08001501ED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		048FE2772EE61E06001501ED = {
+			isa = PBXGroup;
+			children = (
+				048FE2822EE61E06001501ED /* mindpalace */,
+				048FE2902EE61E08001501ED /* mindpalaceTests */,
+				048FE29A2EE61E08001501ED /* mindpalaceUITests */,
+				048FE2E62EE620BB001501ED /* Frameworks */,
+				048FE2812EE61E06001501ED /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		048FE2812EE61E06001501ED /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				048FE2802EE61E06001501ED /* mindpalace.app */,
+				048FE28D2EE61E08001501ED /* mindpalaceTests.xctest */,
+				048FE2972EE61E08001501ED /* mindpalaceUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		048FE2E62EE620BB001501ED /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		048FE27F2EE61E06001501ED /* mindpalace */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 048FE2A12EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalace" */;
+			buildPhases = (
+				048FE27C2EE61E06001501ED /* Sources */,
+				048FE27D2EE61E06001501ED /* Frameworks */,
+				048FE27E2EE61E06001501ED /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				048FE2822EE61E06001501ED /* mindpalace */,
+			);
+			name = mindpalace;
+			packageProductDependencies = (
+				048FE2E72EE620BB001501ED /* MarkdownUI */,
+				048FE2E92EE620C1001501ED /* KeychainAccess */,
+				048FE2F62EE63182001501ED /* Highlightr */,
+			);
+			productName = mindpalace;
+			productReference = 048FE2802EE61E06001501ED /* mindpalace.app */;
+			productType = "com.apple.product-type.application";
+		};
+		048FE28C2EE61E08001501ED /* mindpalaceTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 048FE2A42EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalaceTests" */;
+			buildPhases = (
+				048FE2892EE61E08001501ED /* Sources */,
+				048FE28A2EE61E08001501ED /* Frameworks */,
+				048FE28B2EE61E08001501ED /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				048FE28F2EE61E08001501ED /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				048FE2902EE61E08001501ED /* mindpalaceTests */,
+			);
+			name = mindpalaceTests;
+			packageProductDependencies = (
+			);
+			productName = mindpalaceTests;
+			productReference = 048FE28D2EE61E08001501ED /* mindpalaceTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		048FE2962EE61E08001501ED /* mindpalaceUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 048FE2A72EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalaceUITests" */;
+			buildPhases = (
+				048FE2932EE61E08001501ED /* Sources */,
+				048FE2942EE61E08001501ED /* Frameworks */,
+				048FE2952EE61E08001501ED /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				048FE2992EE61E08001501ED /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				048FE29A2EE61E08001501ED /* mindpalaceUITests */,
+			);
+			name = mindpalaceUITests;
+			packageProductDependencies = (
+			);
+			productName = mindpalaceUITests;
+			productReference = 048FE2972EE61E08001501ED /* mindpalaceUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		048FE2782EE61E06001501ED /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 2610;
+				LastUpgradeCheck = 2610;
+				TargetAttributes = {
+					048FE27F2EE61E06001501ED = {
+						CreatedOnToolsVersion = 26.1.1;
+					};
+					048FE28C2EE61E08001501ED = {
+						CreatedOnToolsVersion = 26.1.1;
+						TestTargetID = 048FE27F2EE61E06001501ED;
+					};
+					048FE2962EE61E08001501ED = {
+						CreatedOnToolsVersion = 26.1.1;
+						TestTargetID = 048FE27F2EE61E06001501ED;
+					};
+				};
+			};
+			buildConfigurationList = 048FE27B2EE61E06001501ED /* Build configuration list for PBXProject "mindpalace" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 048FE2772EE61E06001501ED;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				048FE2E42EE61FCA001501ED /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
+				048FE2E52EE61FDE001501ED /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				048FE2F52EE63179001501ED /* XCRemoteSwiftPackageReference "Highlightr" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 048FE2812EE61E06001501ED /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				048FE27F2EE61E06001501ED /* mindpalace */,
+				048FE28C2EE61E08001501ED /* mindpalaceTests */,
+				048FE2962EE61E08001501ED /* mindpalaceUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		048FE27E2EE61E06001501ED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		048FE28B2EE61E08001501ED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		048FE2952EE61E08001501ED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		048FE27C2EE61E06001501ED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		048FE2892EE61E08001501ED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		048FE2932EE61E08001501ED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		048FE28F2EE61E08001501ED /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 048FE27F2EE61E06001501ED /* mindpalace */;
+			targetProxy = 048FE28E2EE61E08001501ED /* PBXContainerItemProxy */;
+		};
+		048FE2992EE61E08001501ED /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 048FE27F2EE61E06001501ED /* mindpalace */;
+			targetProxy = 048FE2982EE61E08001501ED /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		048FE29F2EE61E08001501ED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = QDY6Y4W8FU;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		048FE2A02EE61E08001501ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = QDY6Y4W8FU;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		048FE2A22EE61E08001501ED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QDY6Y4W8FU;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalace;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		048FE2A32EE61E08001501ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QDY6Y4W8FU;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalace;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		048FE2A52EE61E08001501ED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QDY6Y4W8FU;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalaceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mindpalace.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/mindpalace";
+			};
+			name = Debug;
+		};
+		048FE2A62EE61E08001501ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QDY6Y4W8FU;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalaceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mindpalace.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/mindpalace";
+			};
+			name = Release;
+		};
+		048FE2A82EE61E08001501ED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QDY6Y4W8FU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalaceUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = mindpalace;
+			};
+			name = Debug;
+		};
+		048FE2A92EE61E08001501ED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = QDY6Y4W8FU;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalaceUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				STRING_CATALOG_GENERATE_SYMBOLS = NO;
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = mindpalace;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		048FE27B2EE61E06001501ED /* Build configuration list for PBXProject "mindpalace" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				048FE29F2EE61E08001501ED /* Debug */,
+				048FE2A02EE61E08001501ED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		048FE2A12EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalace" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				048FE2A22EE61E08001501ED /* Debug */,
+				048FE2A32EE61E08001501ED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		048FE2A42EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalaceTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				048FE2A52EE61E08001501ED /* Debug */,
+				048FE2A62EE61E08001501ED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		048FE2A72EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalaceUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				048FE2A82EE61E08001501ED /* Debug */,
+				048FE2A92EE61E08001501ED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		048FE2E42EE61FCA001501ED /* XCRemoteSwiftPackageReference "swift-markdown-ui" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/gonzalezreal/swift-markdown-ui";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.1;
+			};
+		};
+		048FE2E52EE61FDE001501ED /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+		048FE2F52EE63179001501ED /* XCRemoteSwiftPackageReference "Highlightr" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/raspu/Highlightr";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.3.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		048FE2E72EE620BB001501ED /* MarkdownUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 048FE2E42EE61FCA001501ED /* XCRemoteSwiftPackageReference "swift-markdown-ui" */;
+			productName = MarkdownUI;
+		};
+		048FE2E92EE620C1001501ED /* KeychainAccess */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 048FE2E52EE61FDE001501ED /* XCRemoteSwiftPackageReference "KeychainAccess" */;
+			productName = KeychainAccess;
+		};
+		048FE2F62EE63182001501ED /* Highlightr */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 048FE2F52EE63179001501ED /* XCRemoteSwiftPackageReference "Highlightr" */;
+			productName = Highlightr;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 048FE2782EE61E06001501ED /* Project object */;
+}
