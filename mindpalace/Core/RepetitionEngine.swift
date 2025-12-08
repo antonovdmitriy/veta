@@ -36,15 +36,66 @@ class RepetitionEngine {
         )
 
         guard let allSections = try? modelContext.fetch(descriptor) else {
+            print("⚠️ RepetitionEngine: Failed to fetch sections")
             return nil
         }
 
-        // Filter out sections and sort by priority
-        let sortedSections = allSections.sorted { section1, section2 in
+        print("📚 RepetitionEngine: Total sections: \(allSections.count)")
+
+        // Build efficient lookup for leaf sections
+        let leafSections = findLeafSections(in: allSections)
+
+        print("🍃 RepetitionEngine: Leaf sections: \(leafSections.count)")
+
+        // If no leaf sections found, fall back to all sections
+        let sectionsToConsider = leafSections.isEmpty ? allSections : leafSections
+
+        // Sort by priority
+        let sortedSections = sectionsToConsider.sorted { section1, section2 in
             section1.reviewPriority > section2.reviewPriority
         }
 
-        return sortedSections.first
+        let nextSection = sortedSections.first
+        if let section = nextSection {
+            print("✅ RepetitionEngine: Selected section '\(section.title)' (level: \(section.level))")
+        } else {
+            print("❌ RepetitionEngine: No sections available")
+        }
+
+        return nextSection
+    }
+
+    /// Efficiently find all leaf sections (O(n) instead of O(n²))
+    private func findLeafSections(in allSections: [MarkdownSection]) -> [MarkdownSection] {
+        // Group sections by file
+        var sectionsByFile: [UUID: [MarkdownSection]] = [:]
+        for section in allSections {
+            guard let fileId = section.file?.id else { continue }
+            sectionsByFile[fileId, default: []].append(section)
+        }
+
+        var leafSections: [MarkdownSection] = []
+
+        // Process each file separately
+        for (_, sections) in sectionsByFile {
+            let sortedSections = sections.sorted { $0.orderIndex < $1.orderIndex }
+
+            for (index, section) in sortedSections.enumerated() {
+                let isLeaf: Bool
+                if index + 1 < sortedSections.count {
+                    let nextSection = sortedSections[index + 1]
+                    isLeaf = nextSection.level <= section.level
+                } else {
+                    isLeaf = true // Last section in file
+                }
+
+                if isLeaf {
+                    leafSections.append(section)
+                }
+            }
+        }
+
+        return leafSections
     }
 
     /// Returns multiple sections for batch review
@@ -57,7 +108,14 @@ class RepetitionEngine {
             return []
         }
 
-        let sortedSections = allSections.sorted { section1, section2 in
+        // Build efficient lookup for leaf sections
+        let leafSections = findLeafSections(in: allSections)
+
+        // If no leaf sections found, fall back to all sections
+        let sectionsToConsider = leafSections.isEmpty ? allSections : leafSections
+
+        // Sort by priority
+        let sortedSections = sectionsToConsider.sorted { section1, section2 in
             section1.reviewPriority > section2.reviewPriority
         }
 

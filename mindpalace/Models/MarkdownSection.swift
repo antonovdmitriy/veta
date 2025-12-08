@@ -60,6 +60,27 @@ final class MarkdownSection {
         repetitionRecords.isEmpty
     }
 
+    /// Check if this section is a leaf node (has no children)
+    func isLeafSection(in allSections: [MarkdownSection]) -> Bool {
+        guard let file = file else { return true }
+
+        let fileSections = allSections
+            .filter { $0.file?.id == file.id }
+            .sorted { $0.orderIndex < $1.orderIndex }
+
+        guard let currentIndex = fileSections.firstIndex(where: { $0.id == self.id }) else {
+            return true
+        }
+
+        // Check if next section has higher level (is a child)
+        if currentIndex + 1 < fileSections.count {
+            let nextSection = fileSections[currentIndex + 1]
+            return nextSection.level <= level // No children if next is same or lower level
+        }
+
+        return true // Last section in file is always a leaf
+    }
+
     /// Priority for review (higher = more urgent)
     var reviewPriority: Double {
         if isNew {

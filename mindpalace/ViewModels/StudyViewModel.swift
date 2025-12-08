@@ -94,7 +94,8 @@ class StudyViewModel {
 
         currentSection = section
         isShowingFullDocument = false
-        isShowingContext = false
+        // Show context with children when navigating from TOC
+        isShowingContext = true
     }
 
     /// Check if can navigate up
