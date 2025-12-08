@@ -42,13 +42,24 @@ class RepetitionEngine {
 
         print("📚 RepetitionEngine: Total sections: \(allSections.count)")
 
+        // Filter sections based on repository path settings
+        let filteredSections = allSections.filter { section in
+            guard let file = section.file,
+                  let repository = file.repository else {
+                return false
+            }
+            return repository.shouldIncludePath(file.path)
+        }
+
+        print("📁 RepetitionEngine: Filtered to \(filteredSections.count) sections based on path settings")
+
         // Build efficient lookup for leaf sections
-        let leafSections = findLeafSections(in: allSections)
+        let leafSections = findLeafSections(in: filteredSections)
 
         print("🍃 RepetitionEngine: Leaf sections: \(leafSections.count)")
 
-        // If no leaf sections found, fall back to all sections
-        let sectionsToConsider = leafSections.isEmpty ? allSections : leafSections
+        // If no leaf sections found, fall back to filtered sections
+        let sectionsToConsider = leafSections.isEmpty ? filteredSections : leafSections
 
         // Sort by priority
         let sortedSections = sectionsToConsider.sorted { section1, section2 in
@@ -108,11 +119,20 @@ class RepetitionEngine {
             return []
         }
 
-        // Build efficient lookup for leaf sections
-        let leafSections = findLeafSections(in: allSections)
+        // Filter sections based on repository path settings
+        let filteredSections = allSections.filter { section in
+            guard let file = section.file,
+                  let repository = file.repository else {
+                return false
+            }
+            return repository.shouldIncludePath(file.path)
+        }
 
-        // If no leaf sections found, fall back to all sections
-        let sectionsToConsider = leafSections.isEmpty ? allSections : leafSections
+        // Build efficient lookup for leaf sections
+        let leafSections = findLeafSections(in: filteredSections)
+
+        // If no leaf sections found, fall back to filtered sections
+        let sectionsToConsider = leafSections.isEmpty ? filteredSections : leafSections
 
         // Sort by priority
         let sortedSections = sectionsToConsider.sorted { section1, section2 in
@@ -131,7 +151,11 @@ class RepetitionEngine {
         }
 
         return allSections.filter { section in
-            section.file?.repository?.id == repository.id
+            guard section.file?.repository?.id == repository.id,
+                  let file = section.file else {
+                return false
+            }
+            return repository.shouldIncludePath(file.path)
         }
     }
 
@@ -182,9 +206,18 @@ class RepetitionEngine {
             )
         }
 
-        let totalSections = allSections.count
-        let reviewedSections = allSections.filter { !$0.isNew }.count
-        let newSections = allSections.filter { $0.isNew }.count
+        // Filter sections based on repository path settings
+        let filteredSections = allSections.filter { section in
+            guard let file = section.file,
+                  let repository = file.repository else {
+                return false
+            }
+            return repository.shouldIncludePath(file.path)
+        }
+
+        let totalSections = filteredSections.count
+        let reviewedSections = filteredSections.filter { !$0.isNew }.count
+        let newSections = filteredSections.filter { $0.isNew }.count
 
         // Count unique sections reviewed today
         let today = Calendar.current.startOfDay(for: Date())

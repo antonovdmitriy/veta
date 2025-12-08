@@ -43,9 +43,16 @@ final class GitHubRepository {
 
     /// Check if a file path should be included based on settings
     func shouldIncludePath(_ path: String) -> Bool {
-        // If excludedPaths contains this path or its parent, exclude it
+        // First check if explicitly included (takes priority over exclusions)
+        for included in includedPaths {
+            if path == included || path.hasPrefix(included + "/") {
+                return true
+            }
+        }
+
+        // Then check if excluded
         for excluded in excludedPaths {
-            if path.hasPrefix(excluded) {
+            if path == excluded || path.hasPrefix(excluded + "/") {
                 return false
             }
         }
@@ -55,13 +62,7 @@ final class GitHubRepository {
             return true
         }
 
-        // Otherwise, check if path matches any included path
-        for included in includedPaths {
-            if path.hasPrefix(included) {
-                return true
-            }
-        }
-
+        // If includedPaths is not empty and path doesn't match any, exclude
         return false
     }
 

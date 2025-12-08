@@ -111,6 +111,8 @@ struct FolderSelectionView: View {
         errorMessage = nil
 
         print("📁 FolderSelection: Loading folder structure for \(repository.fullName)")
+        print("📁 Current includedPaths: \(repository.includedPaths)")
+        print("📁 Current excludedPaths: \(repository.excludedPaths)")
 
         // Use already synced files instead of fetching from API
         let syncedFiles = repository.files
@@ -260,10 +262,19 @@ struct FolderSelectionView: View {
 
         collectPaths(from: folderStructure, included: &included, excluded: &excluded)
 
+        print("💾 Saving paths - Included: \(included.count), Excluded: \(excluded.count)")
+        print("📁 Included paths: \(included)")
+        print("🚫 Excluded paths: \(excluded)")
+
         repository.includedPaths = included
         repository.excludedPaths = excluded
 
-        try? modelContext.save()
+        do {
+            try modelContext.save()
+            print("✅ Successfully saved folder selection")
+        } catch {
+            print("❌ Error saving folder selection: \(error)")
+        }
     }
 
     private func collectPaths(from nodes: [FolderNode], included: inout [String], excluded: inout [String]) {
@@ -363,12 +374,9 @@ struct FolderRow: View {
 
             // Children (shown when expanded)
             if isExpanded && !node.children.isEmpty {
-                ForEach(node.children.indices, id: \.self) { index in
+                ForEach(Array($node.children.enumerated()), id: \.offset) { index, $child in
                     FolderRow(
-                        node: Binding(
-                            get: { node.children[index] },
-                            set: { node.children[index] = $0 }
-                        ),
+                        node: $child,
                         level: level + 1
                     )
                 }
