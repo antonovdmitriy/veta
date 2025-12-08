@@ -266,8 +266,14 @@ struct FolderSelectionView: View {
         print("📁 Included paths: \(included)")
         print("🚫 Excluded paths: \(excluded)")
 
-        repository.includedPaths = included
-        repository.excludedPaths = excluded
+        // Special case: if nothing is selected, set included to ["__NONE__"] marker
+        if included.isEmpty && excluded.count > 0 {
+            repository.includedPaths = ["__NONE__"]
+            repository.excludedPaths = []
+        } else {
+            repository.includedPaths = included
+            repository.excludedPaths = excluded
+        }
 
         do {
             try modelContext.save()
