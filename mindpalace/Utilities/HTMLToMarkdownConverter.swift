@@ -2,9 +2,12 @@ import Foundation
 
 struct HTMLToMarkdownConverter {
 
-    /// Converts HTML tables to Markdown tables
+    /// Converts HTML tables to Markdown tables and normalizes existing Markdown tables
     static func convertHTMLTables(in markdown: String) -> String {
         var result = markdown
+
+        // First, convert Markdown tables to HTML tables
+        result = convertMarkdownTablesToHTML(result)
 
         // Find all HTML tables
         let tablePattern = #"<table[^>]*>([\s\S]*?)</table>"#
@@ -12,12 +15,12 @@ struct HTMLToMarkdownConverter {
             return markdown
         }
 
-        let matches = tableRegex.matches(in: markdown, range: NSRange(markdown.startIndex..., in: markdown))
+        let matches = tableRegex.matches(in: result, range: NSRange(result.startIndex..., in: result))
 
         // Process matches in reverse order to preserve indices
         for match in matches.reversed() {
-            guard let range = Range(match.range, in: markdown) else { continue }
-            let tableHTML = String(markdown[range])
+            guard let range = Range(match.range, in: result) else { continue }
+            let tableHTML = String(result[range])
 
             if let markdownTable = convertTableToMarkdown(tableHTML) {
                 result.replaceSubrange(range, with: markdownTable)
@@ -131,5 +134,80 @@ struct HTMLToMarkdownConverter {
         cleaned = cleaned.replacingOccurrences(of: "|", with: "\\|")
 
         return cleaned
+    }
+
+    /// Converts Markdown tables to HTML tables
+    private static func convertMarkdownTablesToHTML(_ markdown: String) -> String {
+        let lines = markdown.components(separatedBy: .newlines)
+        var result: [String] = []
+        var tableLines: [String] = []
+        var inTable = false
+
+        var i = 0
+        while i < lines.count {
+            let line = lines[i]
+            let trimmed = line.trimmingCharacters(in: .whitespaces)
+            let isTableLine = trimmed.hasPrefix("|") && trimmed.hasSuffix("|")
+
+            if isTableLine {
+                inTable = true
+                tableLines.append(trimmed)
+                i += 1
+
+                // Skip empty lines between table rows
+                while i < lines.count && lines[i].trimmingCharacters(in: .whitespaces).isEmpty {
+                    i += 1
+                }
+            } else {
+                if inTable && !tableLines.isEmpty {
+                    // Convert collected Markdown table to HTML
+                    let htmlTable = markdownTableToHTML(tableLines)
+                    result.append(htmlTable)
+                    tableLines.removeAll()
+                }
+                inTable = false
+                result.append(line)
+                i += 1
+            }
+        }
+
+        // Handle table at end of document
+        if !tableLines.isEmpty {
+            let htmlTable = markdownTableToHTML(tableLines)
+            result.append(htmlTable)
+        }
+
+        return result.joined(separator: "\n")
+    }
+
+    /// Converts a Markdown table to HTML table
+    private static func markdownTableToHTML(_ tableLines: [String]) -> String {
+        guard tableLines.count >= 2 else { return tableLines.joined(separator: "\n") }
+
+        var html = "<table>"
+
+        for (index, line) in tableLines.enumerated() {
+            // Skip separator line (line with ---)
+            if line.contains("---") || line.contains(":-") || line.contains("-:") {
+                continue
+            }
+
+            // Parse cells
+            let cells = line
+                .split(separator: "|", omittingEmptySubsequences: false)
+                .map { $0.trimmingCharacters(in: .whitespaces) }
+                .filter { !$0.isEmpty }
+
+            let cellTag = (index == 0) ? "th" : "td"
+
+            html += "<tr>"
+            for cell in cells {
+                html += "<\(cellTag)>\(cell)</\(cellTag)>"
+            }
+            html += "</tr>"
+        }
+
+        html += "</table>"
+        return html
     }
 }

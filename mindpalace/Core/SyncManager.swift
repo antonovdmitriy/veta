@@ -36,7 +36,7 @@ class SyncManager {
         do {
             // Update token if needed
             if let token = repository.accessToken {
-                await gitHubService.setToken(token)
+                gitHubService.setToken(token)
             }
 
             // Get repository info to find default branch

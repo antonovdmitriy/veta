@@ -1,6 +1,7 @@
 import Foundation
 
-actor GitHubService {
+@MainActor
+class GitHubService: Sendable {
     private let urlSession: URLSession
     private var token: String?
 
