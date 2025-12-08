@@ -32,8 +32,10 @@ struct FullDocumentView: View {
                 // Fallback: show full content if no sections
                 ScrollView {
                     if let content = file.content {
-                        Markdown(content)
+                        Markdown(HTMLToMarkdownConverter.convertHTMLTables(in: content))
                             .markdownTheme(.gitHub)
+                            .markdownTableBorderStyle(.init(color: .secondary))
+                            .markdownTableBackgroundStyle(.alternatingRows(.secondary.opacity(0.1), Color.clear))
                             .markdownImageProvider(
                                 GitHubImageProvider(
                                     repository: file.repository,
@@ -53,8 +55,10 @@ struct FullDocumentView: View {
                     LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
                         ForEach(file.sections.sorted(by: { $0.orderIndex < $1.orderIndex })) { section in
                             Section {
-                                Markdown(section.content)
+                                Markdown(HTMLToMarkdownConverter.convertHTMLTables(in: section.content))
                                     .markdownTheme(.gitHub)
+                                    .markdownTableBorderStyle(.init(color: .secondary))
+                                    .markdownTableBackgroundStyle(.alternatingRows(.secondary.opacity(0.1), Color.clear))
                                     .markdownImageProvider(
                                         GitHubImageProvider(
                                             repository: file.repository,

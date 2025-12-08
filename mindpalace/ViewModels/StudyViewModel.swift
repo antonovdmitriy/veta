@@ -118,17 +118,21 @@ class StudyViewModel {
     func getCurrentContent() -> String {
         guard let current = currentSection else { return "" }
 
+        let rawContent: String
         if isShowingFullDocument {
             // Show entire document
-            return getFullDocumentContent(for: current)
+            rawContent = getFullDocumentContent(for: current)
         } else if isShowingContext {
             // Show section with children
             let allSections = getAllSections()
-            return current.getContentWithChildren(from: allSections)
+            rawContent = current.getContentWithChildren(from: allSections)
         } else {
             // Show section with its title as markdown
-            return "# \(current.title)\n\n\(current.content)"
+            rawContent = "# \(current.title)\n\n\(current.content)"
         }
+
+        // Convert HTML tables to Markdown tables
+        return HTMLToMarkdownConverter.convertHTMLTables(in: rawContent)
     }
 
     /// Get full document content (limited to avoid memory issues)
