@@ -4,6 +4,27 @@ import MarkdownUI
 struct FullDocumentView: View {
     let file: MarkdownFile
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.openURL) private var defaultOpenURL
+
+    // Handle markdown link clicks
+    private func handleMarkdownLink(_ url: URL) -> OpenURLAction.Result {
+        let urlString = url.absoluteString
+
+        // Ignore anchor links (internal document links starting with #)
+        if urlString.hasPrefix("#") {
+            print("ℹ️ Ignoring anchor link: \(urlString)")
+            return .handled
+        }
+
+        // Open external links
+        if url.scheme == "http" || url.scheme == "https" {
+            defaultOpenURL(url)
+            return .handled
+        }
+
+        print("⚠️ Unsupported link type: \(urlString)")
+        return .discarded
+    }
 
     var body: some View {
         NavigationStack {
@@ -20,6 +41,9 @@ struct FullDocumentView: View {
                                     branch: file.repository?.defaultBranch ?? "main"
                                 )
                             )
+                            .environment(\.openURL, OpenURLAction { url in
+                                handleMarkdownLink(url)
+                            })
                             .padding()
                     }
                 }
@@ -38,6 +62,9 @@ struct FullDocumentView: View {
                                             branch: file.repository?.defaultBranch ?? "main"
                                         )
                                     )
+                                    .environment(\.openURL, OpenURLAction { url in
+                                        handleMarkdownLink(url)
+                                    })
                                     .padding()
                             } header: {
                                 HStack {

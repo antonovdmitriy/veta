@@ -8,6 +8,7 @@ struct SectionCardView: View {
     let onReviewed: () -> Void
 
     @State private var showingFullDocument = false
+    @Environment(\.openURL) private var defaultOpenURL
 
     // Helper function for level colors
     private func levelColor(for level: Int) -> Color {
@@ -18,6 +19,26 @@ struct SectionCardView: View {
         case 4: return .purple
         default: return .gray
         }
+    }
+
+    // Handle markdown link clicks
+    private func handleMarkdownLink(_ url: URL) -> OpenURLAction.Result {
+        let urlString = url.absoluteString
+
+        // Ignore anchor links (internal document links starting with #)
+        if urlString.hasPrefix("#") {
+            print("ℹ️ Ignoring anchor link: \(urlString)")
+            return .handled
+        }
+
+        // Open external links
+        if url.scheme == "http" || url.scheme == "https" {
+            defaultOpenURL(url)
+            return .handled
+        }
+
+        print("⚠️ Unsupported link type: \(urlString)")
+        return .discarded
     }
 
     var body: some View {
@@ -193,6 +214,9 @@ struct SectionCardView: View {
                                 branch: section.file?.repository?.defaultBranch ?? "main"
                             )
                         )
+                        .environment(\.openURL, OpenURLAction { url in
+                            handleMarkdownLink(url)
+                        })
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
                 }
