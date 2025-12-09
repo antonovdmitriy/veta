@@ -189,6 +189,17 @@ struct SectionCardView: View {
                             .font(.title3)
                             .foregroundStyle(.secondary)
                     }
+
+                    // Toggle menu visibility button
+                    Button {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            isMenuVisible.toggle()
+                        }
+                    } label: {
+                        Image(systemName: isMenuVisible ? "chevron.down.circle.fill" : "chevron.up.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .padding(.horizontal, 12)
@@ -278,44 +289,12 @@ struct SectionCardView: View {
                     }
                     .frame(maxHeight: .infinity)
                 }
-                .gesture(
-                    DragGesture(minimumDistance: 30)
-                        .onEnded { value in
-                            // Swipe down to hide menu, swipe up to show menu
-                            if value.translation.height > 50 {
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    isMenuVisible = false
-                                }
-                            } else if value.translation.height < -50 {
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    isMenuVisible = true
-                                }
-                            }
-                        }
-                )
             }
 
         }
         .background(Color(.systemBackground))
         .overlay(alignment: .bottom) {
-            // Show menu indicator when hidden
-            if !isMenuVisible {
-                Button {
-                    withAnimation(.easeInOut(duration: 0.2)) {
-                        isMenuVisible = true
-                    }
-                } label: {
-                    Image(systemName: "chevron.up")
-                        .font(.title2)
-                        .foregroundStyle(.white)
-                        .padding(12)
-                        .background(Color.blue.opacity(0.8))
-                        .clipShape(Circle())
-                        .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
-                }
-                .padding(16)
-                .transition(.move(edge: .bottom).combined(with: .opacity))
-            } else if isMenuVisible {
+            if isMenuVisible {
                 // Floating action buttons
                 HStack(spacing: 12) {
                 // Ignore button
