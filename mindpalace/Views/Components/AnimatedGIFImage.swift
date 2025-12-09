@@ -109,44 +109,48 @@ struct EnhancedAsyncImage: View {
                         }
                 } else if let data = imageData, isGIF {
                     // Animated GIF with play button overlay
-                    ZStack {
-                        if isGIFPlaying {
-                            AnimatedGIFImage(data: data)
-                                .frame(maxWidth: .infinity)
-                                .frame(maxHeight: 400)
-                        } else {
-                            // Show first frame as static image
-                            if let firstFrame = getFirstFrame(from: data) {
-                                Image(uiImage: firstFrame)
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(maxWidth: .infinity)
-                                    .frame(maxHeight: 400)
+                    GeometryReader { geometry in
+                        ZStack {
+                            if isGIFPlaying {
+                                AnimatedGIFImage(data: data)
+                                    .frame(width: geometry.size.width, height: min(400, geometry.size.width * 0.75))
+                                    .clipped()
+                            } else {
+                                // Show first frame as static image
+                                if let firstFrame = getFirstFrame(from: data) {
+                                    Image(uiImage: firstFrame)
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(width: geometry.size.width)
+                                        .frame(maxHeight: 400)
+                                }
                             }
-                        }
 
-                        // Play button overlay
-                        if !isGIFPlaying {
-                            Button {
-                                isGIFPlaying = true
-                            } label: {
-                                ZStack {
-                                    Circle()
-                                        .fill(Color.black.opacity(0.6))
-                                        .frame(width: 60, height: 60)
+                            // Play button overlay
+                            if !isGIFPlaying {
+                                Button {
+                                    isGIFPlaying = true
+                                } label: {
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color.black.opacity(0.6))
+                                            .frame(width: 60, height: 60)
 
-                                    Image(systemName: "play.fill")
-                                        .font(.title)
-                                        .foregroundStyle(.white)
+                                        Image(systemName: "play.fill")
+                                            .font(.title)
+                                            .foregroundStyle(.white)
+                                    }
                                 }
                             }
                         }
-                    }
-                    .onTapGesture {
-                        if isGIFPlaying {
-                            showingZoom = true
+                        .frame(maxWidth: .infinity)
+                        .onTapGesture {
+                            if isGIFPlaying {
+                                showingZoom = true
+                            }
                         }
                     }
+                    .frame(height: 400)
                 } else if let data = imageData, let uiImage = UIImage(data: data) {
                     // Static image
                     Button {
