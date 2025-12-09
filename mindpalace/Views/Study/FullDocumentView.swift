@@ -8,6 +8,22 @@ struct FullDocumentView: View {
     @State private var isLoading = true
     @State private var scrollTarget: String?
     @State private var preloadedAnchors: Set<String> = []
+    @State private var showBackToTop = false
+
+    // Get content before first section (usually table of contents)
+    private var preambleContent: String? {
+        guard let fullContent = file.content,
+              let firstSection = file.sections.sorted(by: { $0.orderIndex < $1.orderIndex }).first,
+              firstSection.lineStart > 0 else {
+            return nil
+        }
+
+        let lines = fullContent.components(separatedBy: .newlines)
+        let preambleLines = Array(lines.prefix(firstSection.lineStart))
+        let content = preambleLines.joined(separator: "\n").trimmingCharacters(in: .whitespacesAndNewlines)
+
+        return content.isEmpty ? nil : content
+    }
 
     // Convert section title to anchor ID (matching markdown convention)
     private func titleToAnchor(_ title: String) -> String {
@@ -120,8 +136,58 @@ struct FullDocumentView: View {
                 } else {
                     // Show sections with lazy loading for better performance
                     ScrollViewReader { proxy in
+                        ZStack(alignment: .topTrailing) {
                         ScrollView {
                             LazyVStack(alignment: .leading, spacing: 0) {
+                                // Top anchor for scroll-to-top button
+                                Color.clear
+                                    .frame(height: 1)
+                                    .id("top")
+                                    .onAppear {
+                                        showBackToTop = false
+                                        preloadedAnchors.insert("top")
+                                        preloadedAnchors.insert("table-of-contents")
+                                        preloadedAnchors.insert("toc")
+                                    }
+                                    .onDisappear {
+                                        showBackToTop = true
+                                    }
+
+                                // Show preamble content (table of contents) if exists
+                                if let preamble = preambleContent {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        HStack {
+                                            Text("Table of Contents")
+                                                .font(.headline)
+                                                .padding(.horizontal)
+                                                .padding(.vertical, 8)
+                                            Spacer()
+                                        }
+                                        .background(Color(.secondarySystemBackground))
+
+                                        Markdown(HTMLToMarkdownConverter.convertHTMLTables(in: preamble))
+                                            .markdownTableBorderStyle(.init(color: .secondary))
+                                            .markdownTableBackgroundStyle(.alternatingRows(.secondary.opacity(0.1), Color.clear))
+                                            .markdownImageProvider(
+                                                GitHubImageProvider(
+                                                    repository: file.repository,
+                                                    filePath: file.path,
+                                                    branch: file.repository?.defaultBranch ?? "main"
+                                                )
+                                            )
+                                            .markdownBlockStyle(\.codeBlock) { configuration in
+                                                HighlightedCodeBlock(configuration: configuration)
+                                            }
+                                            .markdownTheme(.gitHub)
+                                            .environment(\.openURL, OpenURLAction { url in
+                                                handleMarkdownLink(url, scrollProxy: proxy)
+                                            })
+                                            .padding()
+                                    }
+
+                                    Divider()
+                                }
+
                                 ForEach(file.sections.sorted(by: { $0.orderIndex < $1.orderIndex })) { section in
                                     VStack(alignment: .leading, spacing: 0) {
                                         // Section header with id for anchor navigation
@@ -165,6 +231,36 @@ struct FullDocumentView: View {
                                 }
                             }
                         }
+
+                        // Back to top button inside ScrollViewReader
+                        if showBackToTop {
+                            VStack(spacing: 12) {
+                                Spacer()
+                                    .frame(height: 60) // Space for close button from outer ZStack
+
+                                Button {
+                                    proxy.scrollTo("top", anchor: .top)
+                                } label: {
+                                    Image(systemName: "arrow.up.circle.fill")
+                                        .font(.system(size: 32))
+                                        .foregroundStyle(.white, .blue.opacity(0.8))
+                                        .background(
+                                            Circle()
+                                                .fill(.ultraThinMaterial)
+                                                .frame(width: 32, height: 32)
+                                        )
+                                }
+                                .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                                .transition(.scale.combined(with: .opacity))
+                                .padding()
+                            }
+                        }
+                        }
+                        .onChange(of: scrollTarget) { _, newValue in
+                            if newValue != nil {
+                                showBackToTop = true
+                            }
+                        }
                     }
                     }
                 }
@@ -184,8 +280,8 @@ struct FullDocumentView: View {
                                     .frame(width: 32, height: 32)
                             )
                     }
-                    .padding()
                     .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                    .padding()
                 }
             }
         }
