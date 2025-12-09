@@ -128,7 +128,7 @@ struct DocumentRow: View {
 
                     Text("•")
                         .foregroundStyle(.secondary)
-                    Text(file.lastUpdated, style: .relative)
+                    Text(file.lastUpdated.formatted(date: .abbreviated, time: .omitted))
                         .font(.caption)
                         .foregroundStyle(.secondary)
                 }

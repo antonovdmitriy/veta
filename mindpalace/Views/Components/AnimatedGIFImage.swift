@@ -88,17 +88,14 @@ struct EnhancedAsyncImage: View {
                     Image(systemName: "photo.fill")
                         .foregroundStyle(.gray)
                 }
-
-                // Full screen zoom view
-                if showingZoom, let data = imageData {
-                    EmptyView()
-                        .fullScreenCover(isPresented: $showingZoom) {
-                            ZoomableGIFView(data: data, url: url, isGIF: isGIF)
-                        }
-                }
             } else {
                 Image(systemName: "photo.fill")
                     .foregroundStyle(.gray)
+            }
+        }
+        .fullScreenCover(isPresented: $showingZoom) {
+            if let data = imageData {
+                ZoomableGIFView(data: data, url: url, isGIF: isGIF)
             }
         }
     }
