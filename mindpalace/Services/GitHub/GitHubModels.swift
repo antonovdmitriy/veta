@@ -102,7 +102,21 @@ enum GitHubAPIError: Error, LocalizedError {
         case .notFound:
             return "Repository or file not found"
         case .rateLimitExceeded(let resetDate):
-            return "Rate limit exceeded. Resets at \(resetDate.formatted())"
+            let formatter = DateFormatter()
+            formatter.dateStyle = .none
+            formatter.timeStyle = .short
+            let timeString = formatter.string(from: resetDate)
+
+            return """
+            GitHub API rate limit exceeded.
+
+            Without a token: 60 requests/hour
+            With a token: 5,000 requests/hour
+
+            Limit resets at \(timeString)
+
+            Add a GitHub Personal Access Token in Settings to increase your rate limit.
+            """
         case .networkError(let error):
             return "Network error: \(error.localizedDescription)"
         case .decodingError(let error):

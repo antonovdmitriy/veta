@@ -41,22 +41,34 @@ struct StudyView: View {
     }
 
     private var emptyStateView: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "doc.text.magnifyingglass")
-                .font(.system(size: 60))
-                .foregroundStyle(.secondary)
+        VStack(spacing: 24) {
+            Spacer()
 
-            Text("No Sections to Review")
-                .font(.title2)
-                .fontWeight(.semibold)
+            ZStack {
+                Circle()
+                    .fill(Color.blue.opacity(0.1))
+                    .frame(width: 120, height: 120)
 
-            Text("Add repositories from the Repositories tab to get started.")
-                .font(.body)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
+                Image(systemName: "brain.head.profile")
+                    .font(.system(size: 50))
+                    .foregroundStyle(.blue)
+            }
+
+            VStack(spacing: 12) {
+                Text("You're All Caught Up!")
+                    .font(.title2)
+                    .fontWeight(.bold)
+
+                Text("Great job! There are no sections to review right now.\n\nAdd more repositories or come back later for your next review session.")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 32)
+            }
+
+            Spacer()
         }
-        .padding()
+        .frame(maxWidth: .infinity)
     }
 
     private func loadNextSection() {

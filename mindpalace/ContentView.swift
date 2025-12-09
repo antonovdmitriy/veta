@@ -9,7 +9,24 @@ import SwiftUI
 import SwiftData
 
 struct ContentView: View {
+    @Environment(\.modelContext) private var modelContext
+    @Query private var settings: [UserSettings]
     @State private var selectedTab = 0
+
+    private var currentTheme: AppTheme {
+        settings.first?.theme ?? .system
+    }
+
+    private var colorScheme: ColorScheme? {
+        switch currentTheme {
+        case .system:
+            return nil
+        case .light:
+            return .light
+        case .dark:
+            return .dark
+        }
+    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -19,24 +36,31 @@ struct ContentView: View {
                 }
                 .tag(0)
 
+            DocumentsView()
+                .tabItem {
+                    Label("Documents", systemImage: "book.fill")
+                }
+                .tag(1)
+
             RepositoriesView()
                 .tabItem {
                     Label("Repositories", systemImage: "folder")
                 }
-                .tag(1)
+                .tag(2)
 
             StatisticsView()
                 .tabItem {
                     Label("Statistics", systemImage: "chart.bar")
                 }
-                .tag(2)
+                .tag(3)
 
             SettingsView()
                 .tabItem {
                     Label("Settings", systemImage: "gear")
                 }
-                .tag(3)
+                .tag(4)
         }
+        .preferredColorScheme(colorScheme)
     }
 }
 

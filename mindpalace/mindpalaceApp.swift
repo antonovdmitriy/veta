@@ -26,8 +26,10 @@ struct mindpalaceApp: App {
                 configurations: configuration
             )
         } catch {
-            // If migration fails, delete old store and create fresh container
+            // If migration fails, warn and delete old store
             print("⚠️ Migration failed: \(error)")
+            print("⚠️ DATABASE MIGRATION ERROR: Your data will be reset due to incompatible schema changes.")
+            print("⚠️ This is a one-time reset. Future updates will preserve your data.")
 
             // Delete old store files
             let fileManager = FileManager.default
@@ -36,12 +38,17 @@ struct mindpalaceApp: App {
                 let shmURL = appSupportURL.appendingPathComponent("default.store-shm")
                 let walURL = appSupportURL.appendingPathComponent("default.store-wal")
 
+                print("⚠️ Deleting old database at: \(storeURL.path)")
+
                 for url in [storeURL, shmURL, walURL] {
                     if fileManager.fileExists(atPath: url.path) {
                         try? fileManager.removeItem(at: url)
+                        print("⚠️ Deleted: \(url.lastPathComponent)")
                     }
                 }
             }
+
+            print("⚠️ Creating fresh database. Please re-add your repositories.")
 
             // Create fresh container
             do {

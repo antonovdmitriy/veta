@@ -10,6 +10,7 @@ struct SectionCardView: View {
 
     @State private var showingFullDocument = false
     @State private var showingIgnoreConfirmation = false
+    @State private var isMenuVisible = true
     @Environment(\.openURL) private var defaultOpenURL
 
     // Helper function for level colors
@@ -147,12 +148,18 @@ struct SectionCardView: View {
                 HStack(spacing: 8) {
                     // Favorite star button
                     Button {
-                        section.isFavoriteSection.toggle()
+                        let generator = UIImpactFeedbackGenerator(style: .medium)
+                        generator.impactOccurred()
+
+                        withAnimation(.spring(response: 0.3, dampingFraction: 0.6)) {
+                            section.isFavoriteSection.toggle()
+                        }
                         try? viewModel.modelContext.save()
                     } label: {
                         Image(systemName: section.isFavoriteSection ? "star.fill" : "star")
                             .font(.title3)
                             .foregroundStyle(section.isFavoriteSection ? .yellow : .secondary)
+                            .symbolEffect(.bounce, value: section.isFavoriteSection)
                     }
 
                     if viewModel.canNavigateBack() {
@@ -242,9 +249,10 @@ struct SectionCardView: View {
                 .frame(maxHeight: .infinity)
             } else {
                 // Show markdown content
-                ScrollView {
-                    Markdown(viewModel.getCurrentContent())
-                        .markdownTableBorderStyle(.init(color: .secondary))
+                ZStack {
+                    ScrollView {
+                        Markdown(viewModel.getCurrentContent())
+                            .markdownTableBorderStyle(.init(color: .secondary))
                         .markdownTableBackgroundStyle(.alternatingRows(.secondary.opacity(0.1), Color.clear))
                         .markdownImageProvider(
                             GitHubImageProvider(
@@ -262,17 +270,53 @@ struct SectionCardView: View {
                         })
                         .padding(.horizontal, 12)
                         .padding(.vertical, 8)
+                    }
+                    .frame(maxHeight: .infinity)
                 }
-                .frame(maxHeight: .infinity)
+                .gesture(
+                    DragGesture(minimumDistance: 30)
+                        .onEnded { value in
+                            // Swipe down to hide menu, swipe up to show menu
+                            if value.translation.height > 50 {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    isMenuVisible = false
+                                }
+                            } else if value.translation.height < -50 {
+                                withAnimation(.easeInOut(duration: 0.2)) {
+                                    isMenuVisible = true
+                                }
+                            }
+                        }
+                )
             }
 
         }
         .background(Color(.systemBackground))
         .overlay(alignment: .bottom) {
-            // Floating action buttons
-            HStack(spacing: 12) {
+            // Show menu indicator when hidden
+            if !isMenuVisible {
+                Button {
+                    withAnimation(.easeInOut(duration: 0.2)) {
+                        isMenuVisible = true
+                    }
+                } label: {
+                    Image(systemName: "chevron.up")
+                        .font(.title2)
+                        .foregroundStyle(.white)
+                        .padding(12)
+                        .background(Color.blue.opacity(0.8))
+                        .clipShape(Circle())
+                        .shadow(color: .black.opacity(0.2), radius: 4, x: 0, y: 2)
+                }
+                .padding(16)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
+            } else if isMenuVisible {
+                // Floating action buttons
+                HStack(spacing: 12) {
                 // Ignore button
                 Button {
+                    let generator = UINotificationFeedbackGenerator()
+                    generator.notificationOccurred(.warning)
                     showingIgnoreConfirmation = true
                 } label: {
                     HStack(spacing: 8) {
@@ -284,13 +328,21 @@ struct SectionCardView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)
-                    .background(Color.orange)
+                    .background(
+                        LinearGradient(
+                            colors: [Color(red: 1.0, green: 0.6, blue: 0.2), Color(red: 1.0, green: 0.45, blue: 0.1)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
                     .clipShape(Capsule())
-                    .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                    .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
                 }
 
                 // Got it button
                 Button {
+                    let generator = UINotificationFeedbackGenerator()
+                    generator.notificationOccurred(.success)
                     onReviewed()
                 } label: {
                     HStack(spacing: 8) {
@@ -302,12 +354,20 @@ struct SectionCardView: View {
                     .foregroundStyle(.white)
                     .padding(.horizontal, 20)
                     .padding(.vertical, 12)
-                    .background(Color.green)
+                    .background(
+                        LinearGradient(
+                            colors: [Color(red: 0.2, green: 0.8, blue: 0.4), Color(red: 0.1, green: 0.7, blue: 0.35)],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
                     .clipShape(Capsule())
-                    .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                    .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
                 }
+                }
+                .padding(16)
+                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
-            .padding(16)
         }
         .sheet(isPresented: $showingFullDocument) {
             if let file = section.file {

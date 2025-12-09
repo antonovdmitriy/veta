@@ -18,11 +18,11 @@ struct GitHubImageProvider: ImageProvider {
             if let url = url {
                 if url.scheme != nil {
                     // Absolute URL (http/https)
-                    TappableAsyncImage(url: url)
+                    EnhancedAsyncImage(url: url)
                 } else {
                     // Relative URL - resolve to GitHub raw URL
                     if let resolvedURL = resolveGitHubURL(relativePath: url.path) {
-                        TappableAsyncImage(url: resolvedURL)
+                        EnhancedAsyncImage(url: resolvedURL)
                     } else {
                         Image(systemName: "photo.fill")
                             .foregroundStyle(.gray)

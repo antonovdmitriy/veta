@@ -12,6 +12,7 @@ struct SettingsView: View {
     @State private var dailyGoal = Constants.Repetition.defaultDailyGoal
     @State private var showImages = true
     @State private var autoSync = true
+    @State private var selectedTheme: AppTheme = .system
     @State private var githubToken = ""
     @State private var showingTokenInput = false
     @State private var showingResetConfirmation = false
@@ -64,6 +65,18 @@ struct SettingsView: View {
                     Stepper("Daily Goal: \(dailyGoal)", value: $dailyGoal, in: 1...100)
                     Toggle("Show Images", isOn: $showImages)
                     Toggle("Auto Sync", isOn: $autoSync)
+
+                    Picker("Theme", selection: $selectedTheme) {
+                        Text("System").tag(AppTheme.system)
+                        Text("Light").tag(AppTheme.light)
+                        Text("Dark").tag(AppTheme.dark)
+                    }
+
+                    NavigationLink {
+                        RepetitionSettingsView()
+                    } label: {
+                        Text("Repetition Algorithm")
+                    }
                 } header: {
                     Text("Preferences")
                 }
@@ -90,20 +103,16 @@ struct SettingsView: View {
                                 .foregroundStyle(.secondary)
                         }
                     }
+                } header: {
+                    Text("Learning Data")
+                }
 
-                    Button("Export Data") {
-                        // TODO: Implement export
-                    }
-
-                    Button("Import Data") {
-                        // TODO: Implement import
-                    }
-
+                Section {
                     Button("Reset All Progress", role: .destructive) {
                         showingResetConfirmation = true
                     }
                 } header: {
-                    Text("Data")
+                    Text("Danger Zone")
                 } footer: {
                     Text("Reset all progress will delete all repetition records. This action cannot be undone.")
                 }
@@ -135,6 +144,9 @@ struct SettingsView: View {
             .onChange(of: autoSync) { oldValue, newValue in
                 saveSettings()
             }
+            .onChange(of: selectedTheme) { oldValue, newValue in
+                saveSettings()
+            }
             .sheet(isPresented: $showingTokenInput) {
                 TokenInputView(token: $githubToken) {
                     saveSettings()
@@ -161,6 +173,7 @@ struct SettingsView: View {
             dailyGoal = userSettings.dailyGoal
             showImages = userSettings.showImages
             autoSync = userSettings.autoSync
+            selectedTheme = userSettings.theme
             githubToken = userSettings.githubToken ?? ""
         } else {
             // Create default settings
@@ -175,6 +188,7 @@ struct SettingsView: View {
             userSettings.dailyGoal = dailyGoal
             userSettings.showImages = showImages
             userSettings.autoSync = autoSync
+            userSettings.theme = selectedTheme
             userSettings.githubToken = githubToken.isEmpty ? nil : githubToken
             try? modelContext.save()
         }
