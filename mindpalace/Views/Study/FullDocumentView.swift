@@ -7,6 +7,15 @@ struct FullDocumentView: View {
     @Environment(\.openURL) private var defaultOpenURL
     @State private var isLoading = true
     @State private var scrollTarget: String?
+    @State private var preloadedAnchors: Set<String> = []
+
+    // Convert section title to anchor ID (matching markdown convention)
+    private func titleToAnchor(_ title: String) -> String {
+        return title
+            .lowercased()
+            .replacingOccurrences(of: " ", with: "-")
+            .replacingOccurrences(of: "[^a-z0-9-]", with: "", options: .regularExpression)
+    }
 
     // Handle markdown link clicks
     private func handleMarkdownLink(_ url: URL, scrollProxy: ScrollViewProxy?) -> OpenURLAction.Result {
@@ -17,9 +26,10 @@ struct FullDocumentView: View {
             let anchor = String(urlString.dropFirst()) // Remove the #
             if !anchor.isEmpty {
                 scrollTarget = anchor
-                withAnimation {
-                    scrollProxy?.scrollTo(anchor, anchor: .top)
-                }
+                print("📍 Trying to scroll to anchor: \(anchor)")
+
+                // Try scrolling with retries for lazy loaded content
+                tryScrollToAnchor(anchor, scrollProxy: scrollProxy, attempt: 0)
             }
             return .handled
         }
@@ -31,6 +41,40 @@ struct FullDocumentView: View {
         }
 
         return .discarded
+    }
+
+    // Retry scrolling to anchor with delays (for lazy loading)
+    private func tryScrollToAnchor(_ anchor: String, scrollProxy: ScrollViewProxy?, attempt: Int) {
+        let maxAttempts = 15
+        let delay = 0.15
+
+        if preloadedAnchors.contains(anchor) {
+            // Anchor is loaded, scroll immediately
+            print("✅ Found anchor: \(anchor)")
+            withAnimation(.easeInOut(duration: 0.3)) {
+                scrollProxy?.scrollTo(anchor, anchor: .top)
+            }
+        } else if attempt < maxAttempts {
+            // Anchor not yet loaded, find and scroll to section by matching title
+            if attempt == 0 {
+                // On first attempt, try to find the section and trigger its loading
+                let sections = file.sections.sorted(by: { $0.orderIndex < $1.orderIndex })
+                if let matchingSection = sections.first(where: { titleToAnchor($0.title) == anchor }) {
+                    print("🔍 Found matching section: '\(matchingSection.title)' at index \(matchingSection.orderIndex)")
+                    // Scroll to section ID to trigger lazy loading
+                    scrollProxy?.scrollTo(matchingSection.id, anchor: .top)
+                }
+            }
+
+            // Wait and retry
+            print("⏳ Waiting for anchor \(anchor) (attempt \(attempt + 1)/\(maxAttempts))")
+            DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+                tryScrollToAnchor(anchor, scrollProxy: scrollProxy, attempt: attempt + 1)
+            }
+        } else {
+            print("❌ Could not find anchor: \(anchor)")
+            print("📋 Available anchors: \(preloadedAnchors.sorted())")
+        }
     }
 
     var body: some View {
@@ -77,9 +121,26 @@ struct FullDocumentView: View {
                     // Show sections with lazy loading for better performance
                     ScrollViewReader { proxy in
                         ScrollView {
-                            LazyVStack(alignment: .leading, spacing: 0, pinnedViews: [.sectionHeaders]) {
+                            LazyVStack(alignment: .leading, spacing: 0) {
                                 ForEach(file.sections.sorted(by: { $0.orderIndex < $1.orderIndex })) { section in
-                                    Section {
+                                    VStack(alignment: .leading, spacing: 0) {
+                                        // Section header with id for anchor navigation
+                                        HStack {
+                                            Text(section.title)
+                                                .font(.headline)
+                                                .padding(.horizontal)
+                                                .padding(.vertical, 8)
+                                            Spacer()
+                                        }
+                                        .background(Color(.secondarySystemBackground))
+                                        .id(titleToAnchor(section.title))
+                                        .onAppear {
+                                            let anchor = titleToAnchor(section.title)
+                                            preloadedAnchors.insert(anchor)
+                                            print("📌 Section registered with id: \(anchor)")
+                                        }
+
+                                        // Section content
                                         Markdown(HTMLToMarkdownConverter.convertHTMLTables(in: section.content))
                                             .markdownTableBorderStyle(.init(color: .secondary))
                                             .markdownTableBackgroundStyle(.alternatingRows(.secondary.opacity(0.1), Color.clear))
@@ -98,17 +159,7 @@ struct FullDocumentView: View {
                                                 handleMarkdownLink(url, scrollProxy: proxy)
                                             })
                                             .padding()
-                                    } header: {
-                                        HStack {
-                                            Text(section.title)
-                                                .font(.headline)
-                                                .padding(.horizontal)
-                                                .padding(.vertical, 8)
-                                            Spacer()
-                                        }
-                                        .background(Color(.secondarySystemBackground))
                                     }
-                                    .id(section.title.lowercased().replacingOccurrences(of: " ", with: "-"))
 
                                     Divider()
                                 }
