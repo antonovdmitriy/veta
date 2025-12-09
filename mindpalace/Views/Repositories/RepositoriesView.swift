@@ -141,66 +141,68 @@ struct RepositoryRow: View {
     @Environment(\.openURL) private var openURL
 
     var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 8) {
+        VStack(alignment: .leading, spacing: 10) {
+            // Header: name and settings button
+            HStack(alignment: .center) {
                 Text(repository.name)
                     .font(.headline)
+                    .lineLimit(1)
 
-                HStack {
-                    Button {
-                        if let url = URL(string: repository.url) {
-                            openURL(url)
-                        }
-                    } label: {
-                        HStack(spacing: 4) {
-                            Text(repository.owner)
-                            Image(systemName: "link")
-                                .font(.caption2)
-                        }
-                        .font(.caption)
+                Spacer()
+
+                Button {
+                    showingFolderSelection = true
+                } label: {
+                    Image(systemName: "folder.badge.gearshape")
+                        .font(.title3)
                         .foregroundStyle(.blue)
-                    }
-                    .buttonStyle(.borderless)
-
-                    Spacer()
-
-                    if let lastSync = repository.lastSync {
-                        Text("Updated \(lastSync.shortRelativeString)")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
-                    }
                 }
-
-                HStack {
-                    Label("\(repository.files.count) files", systemImage: "doc")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-
-                    if !repository.includedPaths.isEmpty || !repository.excludedPaths.isEmpty {
-                        Label("Filtered", systemImage: "line.3.horizontal.decrease.circle")
-                            .font(.caption)
-                            .foregroundStyle(.blue)
-                    }
-
-                    Spacer()
-
-                    if repository.isPrivate {
-                        Image(systemName: "lock.fill")
-                            .font(.caption)
-                            .foregroundStyle(.orange)
-                    }
-                }
+                .buttonStyle(.borderless)
             }
 
+            // Owner link
             Button {
-                showingFolderSelection = true
+                if let url = URL(string: repository.url) {
+                    openURL(url)
+                }
             } label: {
-                Image(systemName: "folder.badge.gearshape")
-                    .foregroundStyle(.blue)
+                HStack(spacing: 4) {
+                    Image(systemName: "link")
+                        .font(.caption2)
+                    Text(repository.owner)
+                }
+                .font(.caption)
+                .foregroundStyle(.blue)
             }
             .buttonStyle(.borderless)
+
+            // Metadata row
+            HStack(spacing: 12) {
+                Label("\(repository.files.count) files", systemImage: "doc.text")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+
+                if !repository.includedPaths.isEmpty || !repository.excludedPaths.isEmpty {
+                    Label("Filtered", systemImage: "line.3.horizontal.decrease.circle")
+                        .font(.caption)
+                        .foregroundStyle(.blue)
+                }
+
+                if repository.isPrivate {
+                    Label("Private", systemImage: "lock.fill")
+                        .font(.caption)
+                        .foregroundStyle(.orange)
+                }
+            }
+
+            // Last sync
+            if let lastSync = repository.lastSync {
+                Text("Updated \(lastSync.shortRelativeString)")
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+            }
         }
-        .padding(.vertical, 4)
+        .padding(.vertical, 6)
         .sheet(isPresented: $showingFolderSelection) {
             FolderSelectionView(repository: repository)
         }
