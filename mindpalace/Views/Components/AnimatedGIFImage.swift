@@ -128,43 +128,72 @@ struct ZoomableGIFView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var scale: CGFloat = 1.0
     @State private var lastScale: CGFloat = 1.0
+    @State private var offset: CGSize = .zero
+    @State private var lastOffset: CGSize = .zero
 
     var body: some View {
         NavigationStack {
             GeometryReader { geometry in
-                ScrollView([.horizontal, .vertical]) {
+                ZStack {
+                    Color.black.ignoresSafeArea()
+
                     if isGIF {
                         AnimatedGIFImage(data: data)
-                            .frame(
-                                width: geometry.size.width * scale,
-                                height: geometry.size.height * scale
-                            )
-                            .gesture(
-                                MagnificationGesture()
-                                    .onChanged { value in
-                                        scale = lastScale * value
-                                    }
-                                    .onEnded { value in
-                                        lastScale = scale
-                                    }
-                            )
+                            .scaleEffect(scale)
+                            .offset(offset)
                     } else if let uiImage = UIImage(data: data) {
                         Image(uiImage: uiImage)
                             .resizable()
                             .aspectRatio(contentMode: .fit)
-                            .frame(
-                                width: geometry.size.width * scale,
-                                height: geometry.size.height * scale
-                            )
-                            .gesture(
-                                MagnificationGesture()
-                                    .onChanged { value in
-                                        scale = lastScale * value
-                                    }
-                                    .onEnded { value in
-                                        lastScale = scale
-                                    }
-                            )
+                            .scaleEffect(scale)
+                            .offset(offset)
+                    }
+                }
+                .gesture(
+                    MagnificationGesture()
+                        .onChanged { value in
+                            let newScale = lastScale * value
+                            scale = min(max(newScale, 1.0), 5.0) // Limit zoom between 1x and 5x
+                        }
+                        .onEnded { value in
+                            lastScale = scale
+                            // Reset if zoomed out completely
+                            if scale <= 1.0 {
+                                withAnimation(.spring(response: 0.3)) {
+                                    scale = 1.0
+                                    lastScale = 1.0
+                                    offset = .zero
+                                    lastOffset = .zero
+                                }
+                            }
+                        }
+                )
+                .gesture(
+                    DragGesture()
+                        .onChanged { value in
+                            if scale > 1.0 {
+                                offset = CGSize(
+                                    width: lastOffset.width + value.translation.width,
+                                    height: lastOffset.height + value.translation.height
+                                )
+                            }
+                        }
+                        .onEnded { value in
+                            lastOffset = offset
+                        }
+                )
+                .onTapGesture(count: 2) {
+                    // Double tap to zoom in/out
+                    withAnimation(.spring(response: 0.3)) {
+                        if scale > 1.0 {
+                            scale = 1.0
+                            lastScale = 1.0
+                            offset = .zero
+                            lastOffset = .zero
+                        } else {
+                            scale = 2.5
+                            lastScale = 2.5
+                        }
                     }
                 }
             }
