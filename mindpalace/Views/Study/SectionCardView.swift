@@ -10,7 +10,6 @@ struct SectionCardView: View {
 
     @State private var showingFullDocument = false
     @State private var showingIgnoreConfirmation = false
-    @State private var isMenuVisible = true
     @Environment(\.openURL) private var defaultOpenURL
 
     // Helper function for level colors
@@ -189,17 +188,6 @@ struct SectionCardView: View {
                             .font(.title3)
                             .foregroundStyle(.secondary)
                     }
-
-                    // Toggle menu visibility button
-                    Button {
-                        withAnimation(.easeInOut(duration: 0.2)) {
-                            isMenuVisible.toggle()
-                        }
-                    } label: {
-                        Image(systemName: isMenuVisible ? "chevron.down.circle.fill" : "chevron.up.circle.fill")
-                            .font(.title3)
-                            .foregroundStyle(.secondary)
-                    }
                 }
             }
             .padding(.horizontal, 12)
@@ -294,9 +282,8 @@ struct SectionCardView: View {
         }
         .background(Color(.systemBackground))
         .overlay(alignment: .bottom) {
-            if isMenuVisible {
-                // Floating action buttons
-                HStack(spacing: 12) {
+            // Floating action buttons
+            HStack(spacing: 12) {
                 // Ignore button
                 Button {
                     let generator = UINotificationFeedbackGenerator()
@@ -348,10 +335,8 @@ struct SectionCardView: View {
                     .clipShape(Capsule())
                     .shadow(color: .black.opacity(0.3), radius: 8, x: 0, y: 4)
                 }
-                }
-                .padding(16)
-                .transition(.move(edge: .bottom).combined(with: .opacity))
             }
+            .padding(16)
         }
         .sheet(isPresented: $showingFullDocument) {
             if let file = section.file {
