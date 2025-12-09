@@ -165,10 +165,17 @@ struct SectionCardView: View {
                     if viewModel.canNavigateBack() {
                         Button {
                             Task {
-                                isLoadingContent = true
-                                try? await Task.sleep(nanoseconds: 150_000_000) // 0.15 seconds
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    viewModel.navigateBack()
+                                withAnimation(.easeInOut(duration: 0.15)) {
+                                    isLoadingContent = true
+                                }
+                                try? await Task.sleep(nanoseconds: 200_000_000) // 0.2 seconds
+                                await MainActor.run {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        viewModel.navigateBack()
+                                    }
+                                }
+                                try? await Task.sleep(nanoseconds: 50_000_000) // 0.05 seconds
+                                withAnimation(.easeInOut(duration: 0.15)) {
                                     isLoadingContent = false
                                 }
                             }
@@ -182,10 +189,17 @@ struct SectionCardView: View {
                     if viewModel.canNavigateUp() {
                         Button {
                             Task {
-                                isLoadingContent = true
-                                try? await Task.sleep(nanoseconds: 150_000_000) // 0.15 seconds
-                                withAnimation(.easeInOut(duration: 0.2)) {
-                                    viewModel.navigateToParent()
+                                withAnimation(.easeInOut(duration: 0.15)) {
+                                    isLoadingContent = true
+                                }
+                                try? await Task.sleep(nanoseconds: 200_000_000) // 0.2 seconds
+                                await MainActor.run {
+                                    withAnimation(.easeInOut(duration: 0.2)) {
+                                        viewModel.navigateToParent()
+                                    }
+                                }
+                                try? await Task.sleep(nanoseconds: 50_000_000) // 0.05 seconds
+                                withAnimation(.easeInOut(duration: 0.15)) {
                                     isLoadingContent = false
                                 }
                             }
