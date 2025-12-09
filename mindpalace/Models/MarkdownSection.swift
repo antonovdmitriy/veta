@@ -10,6 +10,8 @@ final class MarkdownSection {
     var lineStart: Int
     var lineEnd: Int
     var orderIndex: Int // Position in file
+    var isIgnored: Bool = false // User chose to ignore this section
+    var isFavoriteSection: Bool = false // User marked this specific section as favorite
 
     var file: MarkdownFile?
 
@@ -24,7 +26,9 @@ final class MarkdownSection {
         lineStart: Int,
         lineEnd: Int,
         orderIndex: Int = 0,
-        file: MarkdownFile? = nil
+        file: MarkdownFile? = nil,
+        isIgnored: Bool = false,
+        isFavoriteSection: Bool = false
     ) {
         self.id = id
         self.title = title
@@ -34,6 +38,8 @@ final class MarkdownSection {
         self.lineEnd = lineEnd
         self.orderIndex = orderIndex
         self.file = file
+        self.isIgnored = isIgnored
+        self.isFavoriteSection = isFavoriteSection
     }
 
     /// Unique identifier for syncing across devices
@@ -83,17 +89,38 @@ final class MarkdownSection {
 
     /// Priority for review (higher = more urgent)
     var reviewPriority: Double {
+        var basePriority: Double
+
         if isNew {
-            return 1000.0 // New sections have highest priority
+            basePriority = 1000.0 // New sections have highest priority
+        } else if let lastReview = lastReviewDate {
+            // Calculate days since last review
+            basePriority = Date().timeIntervalSince(lastReview) / 86400.0
+        } else {
+            basePriority = 1000.0
         }
 
-        guard let lastReview = lastReviewDate else {
-            return 1000.0
+        // Boost for favorites (helps them return to top faster after review)
+        if isFavoriteSection {
+            basePriority *= 1.5 // 50% boost for favorite sections
+        } else if isFromFavoriteFolder {
+            basePriority *= 1.3 // 30% boost for favorite folders
         }
 
-        // Calculate days since last review
-        let daysSinceReview = Date().timeIntervalSince(lastReview) / 86400.0
-        return daysSinceReview
+        return basePriority
+    }
+
+    /// Check if this section is from a favorite folder
+    var isFromFavoriteFolder: Bool {
+        guard let file = file,
+              let repository = file.repository else {
+            return false
+        }
+
+        let filePath = file.path
+        return repository.favoritePaths.contains { favPath in
+            filePath == favPath || filePath.hasPrefix(favPath + "/")
+        }
     }
 
     /// Get parent section (section with lower level that comes before this one)

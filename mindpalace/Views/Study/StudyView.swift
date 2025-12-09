@@ -17,8 +17,13 @@ struct StudyView: View {
                         viewModel: vm,
                         onReviewed: {
                             handleReviewed()
+                        },
+                        onIgnored: {
+                            handleIgnored()
                         }
                     )
+                    .transition(.opacity.animation(.easeInOut(duration: 0.2)))
+                    .id(section.id) // Force view recreation for new section
                 } else if showingEmptyState {
                     emptyStateView
                 } else {
@@ -56,8 +61,18 @@ struct StudyView: View {
 
     private func loadNextSection() {
         guard let viewModel = viewModel else { return }
-        currentSection = viewModel.getNextSection()
-        showingEmptyState = currentSection == nil
+
+        // Clear current section immediately to show loading state
+        currentSection = nil
+
+        // Load next section - runs on MainActor so no Sendable issues
+        Task { @MainActor in
+            let section = viewModel.getNextSection()
+            withAnimation(.easeInOut(duration: 0.15)) {
+                currentSection = section
+                showingEmptyState = section == nil
+            }
+        }
     }
 
     private func handleReviewed() {
@@ -68,7 +83,25 @@ struct StudyView: View {
 
         guard let section = sectionToReview else { return }
 
-        viewModel.markAsReviewed(section: section)
+        // Mark as reviewed (stays on MainActor)
+        Task { @MainActor in
+            viewModel.markAsReviewed(section: section)
+        }
+
+        // Load next section immediately
+        loadNextSection()
+    }
+
+    private func handleIgnored() {
+        guard let section = currentSection else { return }
+
+        // Mark as ignored (stays on MainActor)
+        Task { @MainActor in
+            section.isIgnored = true
+            try? modelContext.save()
+        }
+
+        // Load next section immediately
         loadNextSection()
     }
 }

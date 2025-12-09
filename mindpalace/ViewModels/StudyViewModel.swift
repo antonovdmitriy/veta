@@ -3,7 +3,7 @@ import SwiftData
 
 @Observable
 class StudyViewModel {
-    private let modelContext: ModelContext
+    let modelContext: ModelContext
     private let repetitionEngine: RepetitionEngine
 
     var statistics: ReviewStatistics?

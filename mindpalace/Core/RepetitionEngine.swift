@@ -22,6 +22,9 @@ struct ReviewStatistics {
 
 class RepetitionEngine {
     private let modelContext: ModelContext
+    private var cachedInterleavedSections: [MarkdownSection] = []
+    private var cacheTimestamp: Date?
+    private let cacheValidityDuration: TimeInterval = 30 // Cache valid for 30 seconds
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -31,18 +34,43 @@ class RepetitionEngine {
 
     /// Returns the next section to review based on priority
     func getNextSection() -> MarkdownSection? {
+        // Check if cache is valid and has sections
+        if let timestamp = cacheTimestamp,
+           Date().timeIntervalSince(timestamp) < cacheValidityDuration,
+           !cachedInterleavedSections.isEmpty {
+            // Return first section and remove it from cache
+            return cachedInterleavedSections.removeFirst()
+        }
+
+        // Cache is invalid or empty, rebuild it
+        rebuildCache()
+
+        // Return first section from fresh cache
+        if !cachedInterleavedSections.isEmpty {
+            return cachedInterleavedSections.removeFirst()
+        }
+
+        return nil
+    }
+
+    private func rebuildCache() {
         let descriptor = FetchDescriptor<MarkdownSection>(
             sortBy: [SortDescriptor(\.id)]
         )
 
         guard let allSections = try? modelContext.fetch(descriptor) else {
-            return nil
+            cachedInterleavedSections = []
+            return
         }
 
-        // Filter sections based on repository path settings
+        // Filter sections based on repository path settings and ignored status
         let filteredSections = allSections.filter { section in
             guard let file = section.file,
                   let repository = file.repository else {
+                return false
+            }
+            // Skip ignored sections
+            if section.isIgnored {
                 return false
             }
             return repository.shouldIncludePath(file.path)
@@ -54,12 +82,77 @@ class RepetitionEngine {
         // If no leaf sections found, fall back to filtered sections
         let sectionsToConsider = leafSections.isEmpty ? filteredSections : leafSections
 
-        // Sort by priority
-        let sortedSections = sectionsToConsider.sorted { section1, section2 in
-            section1.reviewPriority > section2.reviewPriority
+        // Separate favorites from regular sections
+        var favoriteSections = sectionsToConsider.filter { section in
+            section.isFavoriteSection || section.isFromFavoriteFolder
+        }.sorted { $0.reviewPriority > $1.reviewPriority }
+
+        var regularSections = sectionsToConsider.filter { section in
+            !section.isFavoriteSection && !section.isFromFavoriteFolder
+        }.sorted { $0.reviewPriority > $1.reviewPriority }
+
+        // Shuffle within priority groups to add variety (shuffle top 50 of each)
+        if favoriteSections.count > 1 {
+            let topCount = min(50, favoriteSections.count)
+            let topFavorites = Array(favoriteSections.prefix(topCount)).shuffled()
+            let rest = Array(favoriteSections.dropFirst(topCount))
+            favoriteSections = topFavorites + rest
         }
 
-        return sortedSections.first
+        if regularSections.count > 1 {
+            let topCount = min(50, regularSections.count)
+            let topRegular = Array(regularSections.prefix(topCount)).shuffled()
+            let rest = Array(regularSections.dropFirst(topCount))
+            regularSections = topRegular + rest
+        }
+
+        // Weighted random selection: 60% favorites, 40% regular
+        cachedInterleavedSections = weightedRandomInterleave(
+            favorites: favoriteSections,
+            regular: regularSections,
+            favoriteWeight: 0.6
+        )
+        cacheTimestamp = Date()
+    }
+
+    /// Weighted random interleave: randomly select from favorites or regular based on weight
+    /// Example: favoriteWeight=0.6 means 60% chance to pick favorite, 40% regular
+    private func weightedRandomInterleave(
+        favorites: [MarkdownSection],
+        regular: [MarkdownSection],
+        favoriteWeight: Double
+    ) -> [MarkdownSection] {
+        var result: [MarkdownSection] = []
+        var favIndex = 0
+        var regIndex = 0
+
+        // Continue until we've used all sections
+        while favIndex < favorites.count || regIndex < regular.count {
+            let hasFavorites = favIndex < favorites.count
+            let hasRegular = regIndex < regular.count
+
+            if hasFavorites && hasRegular {
+                // Both available - use weighted random
+                let randomValue = Double.random(in: 0..<1)
+                if randomValue < favoriteWeight {
+                    result.append(favorites[favIndex])
+                    favIndex += 1
+                } else {
+                    result.append(regular[regIndex])
+                    regIndex += 1
+                }
+            } else if hasFavorites {
+                // Only favorites left
+                result.append(favorites[favIndex])
+                favIndex += 1
+            } else if hasRegular {
+                // Only regular left
+                result.append(regular[regIndex])
+                regIndex += 1
+            }
+        }
+
+        return result
     }
 
     /// Efficiently find all leaf sections (O(n) instead of O(n²))
@@ -147,10 +240,14 @@ class RepetitionEngine {
             return []
         }
 
-        // Filter sections based on repository path settings
+        // Filter sections based on repository path settings and ignored status
         let filteredSections = allSections.filter { section in
             guard let file = section.file,
                   let repository = file.repository else {
+                return false
+            }
+            // Skip ignored sections
+            if section.isIgnored {
                 return false
             }
             return repository.shouldIncludePath(file.path)
@@ -162,12 +259,38 @@ class RepetitionEngine {
         // If no leaf sections found, fall back to filtered sections
         let sectionsToConsider = leafSections.isEmpty ? filteredSections : leafSections
 
-        // Sort by priority
-        let sortedSections = sectionsToConsider.sorted { section1, section2 in
-            section1.reviewPriority > section2.reviewPriority
+        // Separate favorites from regular sections
+        var favoriteSections = sectionsToConsider.filter { section in
+            section.isFavoriteSection || section.isFromFavoriteFolder
+        }.sorted { $0.reviewPriority > $1.reviewPriority }
+
+        var regularSections = sectionsToConsider.filter { section in
+            !section.isFavoriteSection && !section.isFromFavoriteFolder
+        }.sorted { $0.reviewPriority > $1.reviewPriority }
+
+        // Shuffle within priority groups to add variety (shuffle top 50 of each)
+        if favoriteSections.count > 1 {
+            let topCount = min(50, favoriteSections.count)
+            let topFavorites = Array(favoriteSections.prefix(topCount)).shuffled()
+            let rest = Array(favoriteSections.dropFirst(topCount))
+            favoriteSections = topFavorites + rest
         }
 
-        return Array(sortedSections.prefix(count))
+        if regularSections.count > 1 {
+            let topCount = min(50, regularSections.count)
+            let topRegular = Array(regularSections.prefix(topCount)).shuffled()
+            let rest = Array(regularSections.dropFirst(topCount))
+            regularSections = topRegular + rest
+        }
+
+        // Weighted random selection: 60% favorites, 40% regular
+        let interleavedSections = weightedRandomInterleave(
+            favorites: favoriteSections,
+            regular: regularSections,
+            favoriteWeight: 0.6
+        )
+
+        return Array(interleavedSections.prefix(count))
     }
 
     /// Returns sections from a specific repository
@@ -196,6 +319,8 @@ class RepetitionEngine {
 
         do {
             try modelContext.save()
+            // Don't invalidate cache immediately - let it expire naturally
+            // This allows preloaded sections to continue working
         } catch {
             print("Error saving review record: \(error)")
         }
@@ -234,10 +359,14 @@ class RepetitionEngine {
             )
         }
 
-        // Filter sections based on repository path settings
+        // Filter sections based on repository path settings and ignored status
         let filteredSections = allSections.filter { section in
             guard let file = section.file,
                   let repository = file.repository else {
+                return false
+            }
+            // Skip ignored sections
+            if section.isIgnored {
                 return false
             }
             return repository.shouldIncludePath(file.path)

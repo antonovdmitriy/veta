@@ -28,7 +28,6 @@ struct mindpalaceApp: App {
         } catch {
             // If migration fails, delete old store and create fresh container
             print("⚠️ Migration failed: \(error)")
-            print("🗑️ Attempting to delete old database and create fresh container...")
 
             // Delete old store files
             let fileManager = FileManager.default
@@ -39,12 +38,7 @@ struct mindpalaceApp: App {
 
                 for url in [storeURL, shmURL, walURL] {
                     if fileManager.fileExists(atPath: url.path) {
-                        do {
-                            try fileManager.removeItem(at: url)
-                            print("✅ Removed: \(url.lastPathComponent)")
-                        } catch {
-                            print("⚠️ Failed to remove \(url.lastPathComponent): \(error)")
-                        }
+                        try? fileManager.removeItem(at: url)
                     }
                 }
             }
@@ -68,9 +62,8 @@ struct mindpalaceApp: App {
                     for: schema,
                     configurations: configuration
                 )
-                print("✅ Successfully created fresh container")
             } catch {
-                fatalError("❌ Failed to initialize ModelContainer even after cleanup: \(error)")
+                fatalError("❌ Failed to initialize ModelContainer: \(error)")
             }
         }
     }

@@ -3,11 +3,13 @@ import SwiftData
 import MarkdownUI
 
 struct SectionCardView: View {
-    let section: MarkdownSection
+    @Bindable var section: MarkdownSection
     let viewModel: StudyViewModel
     let onReviewed: () -> Void
+    let onIgnored: () -> Void
 
     @State private var showingFullDocument = false
+    @State private var showingIgnoreConfirmation = false
     @Environment(\.openURL) private var defaultOpenURL
 
     // Helper function for level colors
@@ -143,6 +145,16 @@ struct SectionCardView: View {
 
                 // Compact navigation buttons
                 HStack(spacing: 8) {
+                    // Favorite star button
+                    Button {
+                        section.isFavoriteSection.toggle()
+                        try? viewModel.modelContext.save()
+                    } label: {
+                        Image(systemName: section.isFavoriteSection ? "star.fill" : "star")
+                            .font(.title3)
+                            .foregroundStyle(section.isFavoriteSection ? .yellow : .secondary)
+                    }
+
                     if viewModel.canNavigateBack() {
                         Button {
                             viewModel.navigateBack()
@@ -256,23 +268,44 @@ struct SectionCardView: View {
 
         }
         .background(Color(.systemBackground))
-        .overlay(alignment: .bottomTrailing) {
-            // Floating action button
-            Button {
-                onReviewed()
-            } label: {
-                HStack(spacing: 8) {
-                    Image(systemName: "checkmark.circle.fill")
-                        .font(.title3)
-                    Text("Got it")
-                        .font(.headline)
+        .overlay(alignment: .bottom) {
+            // Floating action buttons
+            HStack(spacing: 12) {
+                // Ignore button
+                Button {
+                    showingIgnoreConfirmation = true
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title3)
+                        Text("Ignore")
+                            .font(.headline)
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 12)
+                    .background(Color.orange)
+                    .clipShape(Capsule())
+                    .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
                 }
-                .foregroundStyle(.white)
-                .padding(.horizontal, 20)
-                .padding(.vertical, 12)
-                .background(Color.green)
-                .clipShape(Capsule())
-                .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+
+                // Got it button
+                Button {
+                    onReviewed()
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "checkmark.circle.fill")
+                            .font(.title3)
+                        Text("Got it")
+                            .font(.headline)
+                    }
+                    .foregroundStyle(.white)
+                    .padding(.horizontal, 20)
+                    .padding(.vertical, 12)
+                    .background(Color.green)
+                    .clipShape(Capsule())
+                    .shadow(color: .black.opacity(0.2), radius: 8, x: 0, y: 4)
+                }
             }
             .padding(16)
         }
@@ -280,6 +313,14 @@ struct SectionCardView: View {
             if let file = section.file {
                 FullDocumentView(file: file)
             }
+        }
+        .alert("Ignore This Section?", isPresented: $showingIgnoreConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Ignore", role: .destructive) {
+                onIgnored()
+            }
+        } message: {
+            Text("This section will no longer appear in your study sessions. You can unignore it later in Settings.")
         }
     }
 }
@@ -316,7 +357,14 @@ struct SectionCardView: View {
 
     let viewModel = StudyViewModel(modelContext: modelContext)
 
-    SectionCardView(section: section, viewModel: viewModel) {
-        print("Reviewed!")
-    }
+    SectionCardView(
+        section: section,
+        viewModel: viewModel,
+        onReviewed: {
+            print("Reviewed!")
+        },
+        onIgnored: {
+            print("Ignored!")
+        }
+    )
 }

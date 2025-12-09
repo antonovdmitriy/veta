@@ -13,6 +13,7 @@ final class GitHubRepository {
     var lastSync: Date?
     var includedPaths: [String] = [] // Paths to include (empty = all)
     var excludedPaths: [String] = [] // Paths to explicitly exclude
+    var favoritePaths: [String] = [] // Favorite paths to prioritize in repetition
 
     @Relationship(deleteRule: .cascade, inverse: \MarkdownFile.repository)
     var files: [MarkdownFile] = []
@@ -27,7 +28,8 @@ final class GitHubRepository {
         accessToken: String? = nil,
         lastSync: Date? = nil,
         includedPaths: [String] = [],
-        excludedPaths: [String] = []
+        excludedPaths: [String] = [],
+        favoritePaths: [String] = []
     ) {
         self.id = id
         self.name = name
@@ -39,6 +41,7 @@ final class GitHubRepository {
         self.lastSync = lastSync
         self.includedPaths = includedPaths
         self.excludedPaths = excludedPaths
+        self.favoritePaths = favoritePaths
     }
 
     /// Check if a file path should be included based on settings

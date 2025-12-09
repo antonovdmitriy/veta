@@ -4,6 +4,10 @@ import SwiftData
 struct SettingsView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var settings: [UserSettings]
+    @Query(filter: #Predicate<MarkdownSection> { $0.isIgnored == true })
+    private var ignoredSections: [MarkdownSection]
+    @Query(filter: #Predicate<MarkdownSection> { $0.isFavoriteSection == true })
+    private var favoriteSections: [MarkdownSection]
 
     @State private var dailyGoal = Constants.Repetition.defaultDailyGoal
     @State private var showImages = true
@@ -11,6 +15,14 @@ struct SettingsView: View {
     @State private var githubToken = ""
     @State private var showingTokenInput = false
     @State private var showingResetConfirmation = false
+
+    private var ignoredSectionsCount: Int {
+        ignoredSections.count
+    }
+
+    private var favoriteSectionsCount: Int {
+        favoriteSections.count
+    }
 
     var body: some View {
         NavigationStack {
@@ -57,6 +69,28 @@ struct SettingsView: View {
                 }
 
                 Section {
+                    NavigationLink {
+                        FavoriteSectionsView()
+                    } label: {
+                        HStack {
+                            Text("Favorite Sections")
+                            Spacer()
+                            Text("\(favoriteSectionsCount)")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    NavigationLink {
+                        IgnoredSectionsView()
+                    } label: {
+                        HStack {
+                            Text("Ignored Sections")
+                            Spacer()
+                            Text("\(ignoredSectionsCount)")
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
                     Button("Export Data") {
                         // TODO: Implement export
                     }
@@ -151,14 +185,12 @@ struct SettingsView: View {
 
         do {
             let allRecords = try modelContext.fetch(descriptor)
-            print("🗑️ Deleting \(allRecords.count) repetition records")
 
             for record in allRecords {
                 modelContext.delete(record)
             }
 
             try modelContext.save()
-            print("✅ Successfully reset all progress")
         } catch {
             print("❌ Error resetting progress: \(error)")
         }

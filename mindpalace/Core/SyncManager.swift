@@ -54,14 +54,10 @@ class SyncManager {
                 repo: repository.name
             )
 
-            print("Found \(markdownFiles.count) markdown files in \(repository.fullName)")
-
             // Filter files based on repository settings
             let filteredFiles = markdownFiles.filter { file in
                 repository.shouldIncludePath(file.path)
             }
-
-            print("Filtered to \(filteredFiles.count) files based on path settings")
 
             // Process each file
             let totalFiles = filteredFiles.count
@@ -77,11 +73,10 @@ class SyncManager {
             }
 
             progress = 1.0
-            print("Successfully synced \(repository.fullName)")
 
         } catch {
             lastError = error
-            print("Error syncing repository: \(error)")
+            print("❌ Error syncing \(repository.fullName): \(error)")
             throw error
         }
     }
@@ -154,8 +149,6 @@ class SyncManager {
             }
 
             try? modelContext.save()
-
-            print("Processed \(gitHubFile.name): \(parsedSections.count) sections")
         }
     }
 }

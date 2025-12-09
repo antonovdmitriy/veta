@@ -12,7 +12,6 @@ struct FullDocumentView: View {
 
         // Ignore anchor links (internal document links starting with #)
         if urlString.hasPrefix("#") {
-            print("ℹ️ Ignoring anchor link: \(urlString)")
             return .handled
         }
 
@@ -22,7 +21,6 @@ struct FullDocumentView: View {
             return .handled
         }
 
-        print("⚠️ Unsupported link type: \(urlString)")
         return .discarded
     }
 

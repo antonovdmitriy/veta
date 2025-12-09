@@ -110,21 +110,14 @@ struct FolderSelectionView: View {
         isLoading = true
         errorMessage = nil
 
-        print("📁 FolderSelection: Loading folder structure for \(repository.fullName)")
-        print("📁 Current includedPaths: \(repository.includedPaths)")
-        print("📁 Current excludedPaths: \(repository.excludedPaths)")
-
         // Use already synced files instead of fetching from API
         let syncedFiles = repository.files
 
         if syncedFiles.isEmpty {
-            print("⚠️ FolderSelection: No synced files yet. Please sync the repository first.")
             errorMessage = "No files synced yet. Please sync this repository first."
             isLoading = false
             return
         }
-
-        print("📁 FolderSelection: Using \(syncedFiles.count) synced files")
 
         // Build folder tree from synced files
         let filePaths = syncedFiles.map { GitHubContent(
@@ -141,15 +134,11 @@ struct FolderSelectionView: View {
 
         let nodes = buildFolderTree(from: filePaths)
 
-        print("📁 FolderSelection: Built \(nodes.count) root folders")
-
         folderStructure = nodes
         isLoading = false
-        print("📁 FolderSelection: UI updated")
     }
 
     private func buildFolderTree(from files: [GitHubContent]) -> [FolderNode] {
-        print("📁 Building folder tree from \(files.count) files")
 
         // Collect all unique folder paths
         var folderPaths = Set<String>()
@@ -172,20 +161,22 @@ struct FolderSelectionView: View {
             }
         }
 
-        print("📁 Found \(folderPaths.count) unique folders")
-
         // Build nodes for all folders
         var allNodes: [String: FolderNode] = [:]
         for path in folderPaths {
             let components = path.components(separatedBy: "/")
             let name = components.last ?? path
             let isSelected = repository.shouldIncludePath(path)
+            let isFavorite = repository.favoritePaths.contains { favPath in
+                path == favPath || path.hasPrefix(favPath + "/")
+            }
             let fileCount = folderFileCounts[path] ?? 0
 
             allNodes[path] = FolderNode(
                 name: name,
                 path: path,
                 isSelected: isSelected,
+                isFavorite: isFavorite,
                 fileCount: fileCount,
                 children: []
             )
@@ -218,7 +209,6 @@ struct FolderSelectionView: View {
             !node.path.contains("/") || node.path.components(separatedBy: "/").count == 1
         }
 
-        print("📁 Built \(rootNodes.count) root folders")
         return rootNodes.sorted { $0.name < $1.name }
     }
 
@@ -259,12 +249,9 @@ struct FolderSelectionView: View {
     private func savePaths() {
         var included: [String] = []
         var excluded: [String] = []
+        var favorites: [String] = []
 
-        collectPaths(from: folderStructure, included: &included, excluded: &excluded)
-
-        print("💾 Saving paths - Included: \(included.count), Excluded: \(excluded.count)")
-        print("📁 Included paths: \(included)")
-        print("🚫 Excluded paths: \(excluded)")
+        collectPaths(from: folderStructure, included: &included, excluded: &excluded, favorites: &favorites)
 
         // Special case: if nothing is selected, set included to ["__NONE__"] marker
         if included.isEmpty && excluded.count > 0 {
@@ -275,22 +262,28 @@ struct FolderSelectionView: View {
             repository.excludedPaths = excluded
         }
 
+        repository.favoritePaths = favorites
+
         do {
             try modelContext.save()
-            print("✅ Successfully saved folder selection")
         } catch {
             print("❌ Error saving folder selection: \(error)")
         }
     }
 
-    private func collectPaths(from nodes: [FolderNode], included: inout [String], excluded: inout [String]) {
+    private func collectPaths(from nodes: [FolderNode], included: inout [String], excluded: inout [String], favorites: inout [String]) {
         for node in nodes {
             if node.isSelected {
                 included.append(node.path)
             } else {
                 excluded.append(node.path)
             }
-            collectPaths(from: node.children, included: &included, excluded: &excluded)
+
+            if node.isFavorite {
+                favorites.append(node.path)
+            }
+
+            collectPaths(from: node.children, included: &included, excluded: &excluded, favorites: &favorites)
         }
     }
 }
@@ -302,13 +295,15 @@ struct FolderNode: Identifiable {
     let name: String
     let path: String
     var isSelected: Bool
+    var isFavorite: Bool
     var fileCount: Int
     var children: [FolderNode]
 
-    init(name: String, path: String, isSelected: Bool, fileCount: Int, children: [FolderNode] = []) {
+    init(name: String, path: String, isSelected: Bool, isFavorite: Bool = false, fileCount: Int, children: [FolderNode] = []) {
         self.name = name
         self.path = path
         self.isSelected = isSelected
+        self.isFavorite = isFavorite
         self.fileCount = fileCount
         self.children = children
     }
@@ -371,6 +366,16 @@ struct FolderRow: View {
                 }
 
                 Spacer()
+
+                // Favorite star button
+                Button {
+                    node.isFavorite.toggle()
+                } label: {
+                    Image(systemName: node.isFavorite ? "star.fill" : "star")
+                        .foregroundStyle(node.isFavorite ? .yellow : .secondary)
+                        .font(.body)
+                }
+                .buttonStyle(.plain)
 
                 Toggle("", isOn: $node.isSelected)
                     .labelsHidden()
