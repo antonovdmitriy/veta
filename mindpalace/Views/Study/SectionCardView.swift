@@ -252,28 +252,29 @@ struct SectionCardView: View {
                 ZStack {
                     GeometryReader { geometry in
                         ScrollView {
-                            Markdown(viewModel.getCurrentContent())
-                                .markdownTableBorderStyle(.init(color: .secondary))
-                                .markdownTableBackgroundStyle(.alternatingRows(.secondary.opacity(0.1), Color.clear))
-                                .markdownImageProvider(
-                                    GitHubImageProvider(
-                                        repository: section.file?.repository,
-                                        filePath: section.file?.path ?? "",
-                                        branch: section.file?.repository?.defaultBranch ?? "main"
+                            VStack(alignment: .leading, spacing: 0) {
+                                Markdown(viewModel.getCurrentContent())
+                                    .markdownTableBorderStyle(.init(color: .secondary))
+                                    .markdownTableBackgroundStyle(.alternatingRows(.secondary.opacity(0.1), Color.clear))
+                                    .markdownImageProvider(
+                                        GitHubImageProvider(
+                                            repository: section.file?.repository,
+                                            filePath: section.file?.path ?? "",
+                                            branch: section.file?.repository?.defaultBranch ?? "main"
+                                        )
                                     )
-                                )
-                                .markdownBlockStyle(\.codeBlock) { configuration in
-                                    HighlightedCodeBlock(configuration: configuration)
-                                }
-                                .markdownTheme(.gitHub)
-                                .environment(\.openURL, OpenURLAction { url in
-                                    handleMarkdownLink(url)
-                                })
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 8)
-                                .frame(width: geometry.size.width - 24, alignment: .leading)
+                                    .markdownBlockStyle(\.codeBlock) { configuration in
+                                        HighlightedCodeBlock(configuration: configuration)
+                                    }
+                                    .markdownTheme(.gitHub)
+                                    .environment(\.openURL, OpenURLAction { url in
+                                        handleMarkdownLink(url)
+                                    })
+                            }
+                            .frame(width: geometry.size.width, alignment: .leading)
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
                         }
-                        .frame(maxWidth: .infinity, maxHeight: .infinity)
                     }
                     .frame(maxHeight: .infinity)
                 }
