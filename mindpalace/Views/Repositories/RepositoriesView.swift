@@ -138,6 +138,7 @@ struct RepositoriesView: View {
 struct RepositoryRow: View {
     let repository: GitHubRepository
     @State private var showingFolderSelection = false
+    @Environment(\.openURL) private var openURL
 
     var body: some View {
         HStack {
@@ -146,9 +147,20 @@ struct RepositoryRow: View {
                     .font(.headline)
 
                 HStack {
-                    Text(repository.owner)
+                    Button {
+                        if let url = URL(string: repository.url) {
+                            openURL(url)
+                        }
+                    } label: {
+                        HStack(spacing: 4) {
+                            Text(repository.owner)
+                            Image(systemName: "link")
+                                .font(.caption2)
+                        }
                         .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.blue)
+                    }
+                    .buttonStyle(.borderless)
 
                     Spacer()
 
