@@ -16,13 +16,22 @@ struct AnimatedGIFImage: UIViewRepresentable {
     }
 
     func updateUIView(_ uiView: UIImageView, context: Context) {
+        // Stop any existing animation and clear memory
+        uiView.stopAnimating()
+        uiView.animationImages = nil
+
         guard let source = CGImageSourceCreateWithData(data as CFData, nil) else { return }
 
         let frameCount = CGImageSourceGetCount(source)
+
+        // Limit frame count to prevent memory issues
+        let maxFrames = 50 // Limit to 50 frames
+        let step = max(1, frameCount / maxFrames)
+
         var images: [UIImage] = []
         var totalDuration: TimeInterval = 0
 
-        for i in 0..<frameCount {
+        for i in stride(from: 0, to: frameCount, by: step) {
             guard let cgImage = CGImageSourceCreateImageAtIndex(source, i, nil) else { continue }
 
             // Get frame duration
@@ -36,8 +45,11 @@ struct AnimatedGIFImage: UIViewRepresentable {
                 }
             }
 
-            images.append(UIImage(cgImage: cgImage))
-            totalDuration += frameDuration
+            // Scale down images to reduce memory
+            let maxSize: CGFloat = 800
+            let scaledImage = scaleImage(UIImage(cgImage: cgImage), maxSize: maxSize)
+            images.append(scaledImage)
+            totalDuration += frameDuration * Double(step)
         }
 
         if !images.isEmpty {
@@ -47,6 +59,30 @@ struct AnimatedGIFImage: UIViewRepresentable {
             uiView.startAnimating()
         }
     }
+
+    private func scaleImage(_ image: UIImage, maxSize: CGFloat) -> UIImage {
+        let size = image.size
+        if size.width <= maxSize && size.height <= maxSize {
+            return image
+        }
+
+        let scale = min(maxSize / size.width, maxSize / size.height)
+        let newSize = CGSize(width: size.width * scale, height: size.height * scale)
+
+        UIGraphicsBeginImageContextWithOptions(newSize, false, 1.0)
+        image.draw(in: CGRect(origin: .zero, size: newSize))
+        let scaledImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+
+        return scaledImage ?? image
+    }
+
+    static func dismantleUIView(_ uiView: UIImageView, coordinator: ()) {
+        // Clean up when view is removed
+        uiView.stopAnimating()
+        uiView.animationImages = nil
+        uiView.image = nil
+    }
 }
 
 // Enhanced TappableAsyncImage with GIF support
@@ -55,6 +91,7 @@ struct EnhancedAsyncImage: View {
     @State private var imageData: Data?
     @State private var isLoading = true
     @State private var showingZoom = false
+    @State private var isGIFPlaying = false
 
     private var isGIF: Bool {
         url?.pathExtension.lowercased() == "gif"
@@ -71,15 +108,45 @@ struct EnhancedAsyncImage: View {
                             await loadImage()
                         }
                 } else if let data = imageData, isGIF {
-                    // Animated GIF
-                    Button {
-                        showingZoom = true
-                    } label: {
-                        AnimatedGIFImage(data: data)
-                            .frame(maxWidth: .infinity)
-                            .frame(maxHeight: 400)
+                    // Animated GIF with play button overlay
+                    ZStack {
+                        if isGIFPlaying {
+                            AnimatedGIFImage(data: data)
+                                .frame(maxWidth: .infinity)
+                                .frame(maxHeight: 400)
+                        } else {
+                            // Show first frame as static image
+                            if let firstFrame = getFirstFrame(from: data) {
+                                Image(uiImage: firstFrame)
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(maxWidth: .infinity)
+                                    .frame(maxHeight: 400)
+                            }
+                        }
+
+                        // Play button overlay
+                        if !isGIFPlaying {
+                            Button {
+                                isGIFPlaying = true
+                            } label: {
+                                ZStack {
+                                    Circle()
+                                        .fill(Color.black.opacity(0.6))
+                                        .frame(width: 60, height: 60)
+
+                                    Image(systemName: "play.fill")
+                                        .font(.title)
+                                        .foregroundStyle(.white)
+                                }
+                            }
+                        }
                     }
-                    .buttonStyle(.plain)
+                    .onTapGesture {
+                        if isGIFPlaying {
+                            showingZoom = true
+                        }
+                    }
                 } else if let data = imageData, let uiImage = UIImage(data: data) {
                     // Static image
                     Button {
@@ -129,6 +196,14 @@ struct EnhancedAsyncImage: View {
                 isLoading = false
             }
         }
+    }
+
+    private func getFirstFrame(from data: Data) -> UIImage? {
+        guard let source = CGImageSourceCreateWithData(data as CFData, nil),
+              let cgImage = CGImageSourceCreateImageAtIndex(source, 0, nil) else {
+            return nil
+        }
+        return UIImage(cgImage: cgImage)
     }
 }
 
