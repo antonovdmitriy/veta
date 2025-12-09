@@ -59,7 +59,7 @@ struct EnhancedAsyncImage: View {
 
     var body: some View {
         Group {
-            if let url = url {
+            if url != nil {
                 if isLoading {
                     ProgressView()
                         .task {
