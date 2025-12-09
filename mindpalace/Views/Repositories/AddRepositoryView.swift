@@ -26,10 +26,22 @@ struct AddRepositoryView: View {
 
                 if settings.first?.githubToken == nil {
                     Section {
-                        Text("⚠️ No GitHub token configured")
-                            .foregroundStyle(.orange)
-                        Text("Add a token in Settings to access private repositories and increase API limits.")
-                            .font(.caption)
+                        HStack(alignment: .top, spacing: 12) {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .font(.title3)
+                                .foregroundStyle(.orange)
+
+                            VStack(alignment: .leading, spacing: 6) {
+                                Text("No GitHub Token")
+                                    .font(.subheadline)
+                                    .fontWeight(.semibold)
+
+                                Text("Add a token in Settings to access private repositories and increase API limits (60 → 5000 requests/hour).")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+                        .padding(.vertical, 4)
                     }
                 }
 
@@ -59,11 +71,18 @@ struct AddRepositoryView: View {
             }
             .overlay {
                 if isLoading {
-                    ProgressView("Fetching repository...")
-                        .padding()
-                        .background(Color(.systemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 10))
-                        .shadow(radius: 4)
+                    VStack(spacing: 12) {
+                        ProgressView()
+                            .scaleEffect(1.2)
+                            .tint(.blue)
+                        Text("Fetching repository...")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .padding(24)
+                    .background(Color(.systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 4)
                 }
             }
         }

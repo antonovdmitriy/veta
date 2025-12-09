@@ -3,6 +3,7 @@ import SwiftData
 
 struct StatisticsView: View {
     @Environment(\.modelContext) private var modelContext
+    @Query private var settings: [UserSettings]
     @State private var statistics: ReviewStatistics?
 
     var body: some View {
@@ -10,88 +11,130 @@ struct StatisticsView: View {
             ScrollView {
                 VStack(spacing: 20) {
                     if let stats = statistics {
-                        // Daily Progress
-                        VStack(spacing: 12) {
-                            Text("Today's Progress")
-                                .font(.headline)
-
+                        // Daily Progress - Blue gradient card
+                        VStack(spacing: 16) {
                             HStack {
-                                Text("\(stats.reviewedToday)")
-                                    .font(.system(size: 48, weight: .bold))
-                                Text("/ \(stats.dailyGoal)")
+                                Image(systemName: "target")
                                     .font(.title2)
-                                    .foregroundStyle(.secondary)
+                                    .foregroundStyle(.white)
+                                Text("Today's Progress")
+                                    .font(.headline)
+                                    .foregroundStyle(.white)
+                                Spacer()
+                            }
+
+                            HStack(alignment: .lastTextBaseline, spacing: 8) {
+                                Text("\(stats.reviewedToday)")
+                                    .font(.system(size: 56, weight: .bold))
+                                    .foregroundStyle(.white)
+                                Text("/ \(stats.dailyGoal)")
+                                    .font(.title)
+                                    .foregroundStyle(.white.opacity(0.7))
                             }
 
                             ProgressView(value: stats.dailyProgress)
-                                .tint(.blue)
+                                .tint(.white)
+                                .background(Color.white.opacity(0.3))
+                                .clipShape(RoundedRectangle(cornerRadius: 4))
                         }
-                        .padding()
+                        .padding(24)
                         .frame(maxWidth: .infinity)
-                        .background(Color(.secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .background(
+                            LinearGradient(
+                                colors: [Color.blue, Color.blue.opacity(0.8)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .shadow(color: .blue.opacity(0.3), radius: 8, x: 0, y: 4)
 
-                        // Streak
-                        VStack(spacing: 12) {
+                        // Streak - Orange gradient card
+                        VStack(spacing: 16) {
                             HStack {
                                 Image(systemName: "flame.fill")
-                                    .foregroundStyle(.orange)
+                                    .font(.title2)
+                                    .foregroundStyle(.white)
                                 Text("Current Streak")
                                     .font(.headline)
+                                    .foregroundStyle(.white)
+                                Spacer()
                             }
 
-                            Text("\(stats.currentStreak)")
-                                .font(.system(size: 48, weight: .bold))
-                            Text("days")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            VStack(spacing: 4) {
+                                Text("\(stats.currentStreak)")
+                                    .font(.system(size: 56, weight: .bold))
+                                    .foregroundStyle(.white)
+                                Text("days in a row")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.white.opacity(0.8))
+                            }
                         }
-                        .padding()
+                        .padding(24)
                         .frame(maxWidth: .infinity)
-                        .background(Color(.secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .background(
+                            LinearGradient(
+                                colors: [Color.orange, Color.orange.opacity(0.8)],
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
+                            )
+                        )
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .shadow(color: .orange.opacity(0.3), radius: 8, x: 0, y: 4)
 
-                        // Overview
-                        VStack(alignment: .leading, spacing: 16) {
+                        // Overview - Enhanced card
+                        VStack(alignment: .leading, spacing: 20) {
                             Text("Overview")
-                                .font(.headline)
+                                .font(.title3)
+                                .fontWeight(.semibold)
 
-                            StatRow(
-                                title: "Total Sections",
-                                value: "\(stats.totalSections)",
-                                icon: "square.grid.2x2"
-                            )
+                            VStack(spacing: 14) {
+                                StatRow(
+                                    title: "Total Sections",
+                                    value: "\(stats.totalSections)",
+                                    icon: "square.grid.2x2",
+                                    color: .purple
+                                )
 
-                            StatRow(
-                                title: "Reviewed",
-                                value: "\(stats.reviewedSections)",
-                                icon: "checkmark.circle.fill",
-                                color: .green
-                            )
+                                StatRow(
+                                    title: "Reviewed",
+                                    value: "\(stats.reviewedSections)",
+                                    icon: "checkmark.circle.fill",
+                                    color: .green
+                                )
 
-                            StatRow(
-                                title: "New",
-                                value: "\(stats.newSections)",
-                                icon: "plus.circle.fill",
-                                color: .blue
-                            )
+                                StatRow(
+                                    title: "New",
+                                    value: "\(stats.newSections)",
+                                    icon: "plus.circle.fill",
+                                    color: .blue
+                                )
+                            }
 
                             Divider()
+                                .padding(.vertical, 4)
 
-                            HStack {
-                                Text("Progress")
-                                    .foregroundStyle(.secondary)
-                                Spacer()
-                                Text("\(Int(stats.progress * 100))%")
-                                    .fontWeight(.semibold)
+                            VStack(alignment: .leading, spacing: 8) {
+                                HStack {
+                                    Text("Overall Progress")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                    Spacer()
+                                    Text("\(Int(stats.progress * 100))%")
+                                        .font(.title3)
+                                        .fontWeight(.bold)
+                                        .foregroundStyle(.green)
+                                }
+
+                                ProgressView(value: stats.progress)
+                                    .tint(.green)
+                                    .scaleEffect(x: 1, y: 1.5, anchor: .center)
                             }
-
-                            ProgressView(value: stats.progress)
-                                .tint(.green)
                         }
-                        .padding()
+                        .padding(20)
                         .background(Color(.secondarySystemBackground))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                        .shadow(color: .black.opacity(0.05), radius: 4, x: 0, y: 2)
                     } else {
                         ProgressView("Loading statistics...")
                     }
@@ -100,6 +143,9 @@ struct StatisticsView: View {
             }
             .navigationTitle("Statistics")
             .onAppear {
+                loadStatistics()
+            }
+            .onChange(of: settings) { _, _ in
                 loadStatistics()
             }
         }
@@ -118,18 +164,26 @@ struct StatRow: View {
     var color: Color = .primary
 
     var body: some View {
-        HStack {
-            Image(systemName: icon)
-                .foregroundStyle(color)
-                .frame(width: 24)
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(color.opacity(0.15))
+                    .frame(width: 36, height: 36)
+
+                Image(systemName: icon)
+                    .font(.body)
+                    .foregroundStyle(color)
+            }
 
             Text(title)
-                .foregroundStyle(.secondary)
+                .font(.subheadline)
 
             Spacer()
 
             Text(value)
-                .fontWeight(.semibold)
+                .font(.title3)
+                .fontWeight(.bold)
+                .foregroundStyle(.primary)
         }
     }
 }

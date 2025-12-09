@@ -18,21 +18,31 @@ struct IgnoredSectionsView: View {
                 )
             } else {
                 ForEach(ignoredSections) { section in
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(section.title)
-                            .font(.headline)
+                    HStack(spacing: 12) {
+                        Image(systemName: "xmark.circle.fill")
+                            .font(.title3)
+                            .foregroundStyle(.orange)
 
-                        if let fileName = section.file?.fileName {
-                            Text(fileName)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(section.title)
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+
+                            if let fileName = section.file?.fileName {
+                                Label(fileName, systemImage: "doc.text")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
+
+                        Spacer()
                     }
+                    .padding(.vertical, 4)
                     .swipeActions(edge: .trailing) {
                         Button {
                             unignoreSection(section)
                         } label: {
-                            Label("Unignore", systemImage: "arrow.uturn.backward")
+                            Label("Unignore", systemImage: "arrow.uturn.backward.circle.fill")
                         }
                         .tint(.blue)
                     }

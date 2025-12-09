@@ -62,13 +62,18 @@ struct RepositoriesView: View {
             }
             .overlay {
                 if isSyncing {
-                    VStack {
-                        ProgressView("Syncing repositories...")
-                            .padding()
-                            .background(Color(.systemBackground))
-                            .clipShape(RoundedRectangle(cornerRadius: 10))
-                            .shadow(radius: 4)
+                    VStack(spacing: 12) {
+                        ProgressView()
+                            .scaleEffect(1.2)
+                            .tint(.blue)
+                        Text("Syncing repositories...")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
+                    .padding(24)
+                    .background(Color(.systemBackground))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
+                    .shadow(color: .black.opacity(0.15), radius: 12, x: 0, y: 4)
                 }
             }
             .onAppear {
@@ -80,32 +85,56 @@ struct RepositoriesView: View {
     }
 
     private var emptyStateView: some View {
-        VStack(spacing: 20) {
-            Image(systemName: "folder.badge.plus")
-                .font(.system(size: 60))
-                .foregroundStyle(.secondary)
+        VStack(spacing: 24) {
+            Spacer()
 
-            Text("No Repositories")
-                .font(.title2)
-                .fontWeight(.semibold)
+            ZStack {
+                Circle()
+                    .fill(Color.blue.opacity(0.1))
+                    .frame(width: 120, height: 120)
 
-            Text("Add a GitHub repository to start learning")
-                .font(.body)
-                .foregroundStyle(.secondary)
-                .multilineTextAlignment(.center)
+                Image(systemName: "folder.badge.plus")
+                    .font(.system(size: 50))
+                    .foregroundStyle(.blue)
+            }
+
+            VStack(spacing: 12) {
+                Text("No Repositories")
+                    .font(.title2)
+                    .fontWeight(.bold)
+
+                Text("Add a GitHub repository to start learning with Mind Palace")
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 32)
+            }
 
             Button {
                 showingAddRepository = true
             } label: {
-                Label("Add Repository", systemImage: "plus")
-                    .font(.headline)
-                    .padding()
-                    .background(Color.accentColor)
-                    .foregroundStyle(.white)
-                    .clipShape(RoundedRectangle(cornerRadius: 10))
+                HStack(spacing: 8) {
+                    Image(systemName: "plus.circle.fill")
+                    Text("Add Repository")
+                }
+                .font(.headline)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 24)
+                .padding(.vertical, 14)
+                .background(
+                    LinearGradient(
+                        colors: [Color.blue, Color.blue.opacity(0.8)],
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                )
+                .clipShape(RoundedRectangle(cornerRadius: 12))
+                .shadow(color: .blue.opacity(0.3), radius: 8, x: 0, y: 4)
             }
+
+            Spacer()
         }
-        .padding()
+        .frame(maxWidth: .infinity)
     }
 
     private func deleteRepository(_ repository: GitHubRepository) {

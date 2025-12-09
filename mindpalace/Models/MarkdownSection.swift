@@ -87,8 +87,16 @@ final class MarkdownSection {
         return true // Last section in file is always a leaf
     }
 
-    /// Priority for review (higher = more urgent)
+    /// Priority for review (higher = more urgent) - with default multipliers
     var reviewPriority: Double {
+        return calculateReviewPriority(
+            favoriteBoost: 1.5,
+            favoriteFolderBoost: 1.3
+        )
+    }
+
+    /// Calculate review priority with custom multipliers
+    func calculateReviewPriority(favoriteBoost: Double, favoriteFolderBoost: Double) -> Double {
         var basePriority: Double
 
         if isNew {
@@ -102,9 +110,9 @@ final class MarkdownSection {
 
         // Boost for favorites (helps them return to top faster after review)
         if isFavoriteSection {
-            basePriority *= 1.5 // 50% boost for favorite sections
+            basePriority *= favoriteBoost
         } else if isFromFavoriteFolder {
-            basePriority *= 1.3 // 30% boost for favorite folders
+            basePriority *= favoriteFolderBoost
         }
 
         return basePriority

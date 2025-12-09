@@ -18,29 +18,31 @@ struct FavoriteSectionsView: View {
                 )
             } else {
                 ForEach(favoriteSections) { section in
-                    VStack(alignment: .leading, spacing: 4) {
-                        HStack {
+                    HStack(spacing: 12) {
+                        Image(systemName: "star.fill")
+                            .font(.title3)
+                            .foregroundStyle(.yellow)
+
+                        VStack(alignment: .leading, spacing: 4) {
                             Text(section.title)
-                                .font(.headline)
+                                .font(.subheadline)
+                                .fontWeight(.medium)
 
-                            Spacer()
-
-                            Image(systemName: "star.fill")
-                                .font(.caption)
-                                .foregroundStyle(.yellow)
+                            if let fileName = section.file?.fileName {
+                                Label(fileName, systemImage: "doc.text")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
                         }
 
-                        if let fileName = section.file?.fileName {
-                            Text(fileName)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
+                        Spacer()
                     }
+                    .padding(.vertical, 4)
                     .swipeActions(edge: .trailing) {
                         Button {
                             unfavoriteSection(section)
                         } label: {
-                            Label("Unfavorite", systemImage: "star.slash")
+                            Label("Unfavorite", systemImage: "star.slash.fill")
                         }
                         .tint(.orange)
                     }

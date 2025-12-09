@@ -24,16 +24,28 @@ class RepetitionEngine {
     private let modelContext: ModelContext
     private var cachedInterleavedSections: [MarkdownSection] = []
     private var cacheTimestamp: Date?
-    private let cacheValidityDuration: TimeInterval = 30 // Cache valid for 30 seconds
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
+    }
+
+    // Get user settings or return defaults
+    private func getUserSettings() -> UserSettings {
+        let descriptor = FetchDescriptor<UserSettings>()
+        if let settings = try? modelContext.fetch(descriptor).first {
+            return settings
+        }
+        // Return default settings if none exist
+        return UserSettings()
     }
 
     // MARK: - Getting Next Section
 
     /// Returns the next section to review based on priority
     func getNextSection() -> MarkdownSection? {
+        let settings = getUserSettings()
+        let cacheValidityDuration = TimeInterval(settings.cacheDurationSeconds)
+
         // Check if cache is valid and has sections
         if let timestamp = cacheTimestamp,
            Date().timeIntervalSince(timestamp) < cacheValidityDuration,
@@ -54,6 +66,7 @@ class RepetitionEngine {
     }
 
     private func rebuildCache() {
+        let settings = getUserSettings()
         let descriptor = FetchDescriptor<MarkdownSection>(
             sortBy: [SortDescriptor(\.id)]
         )
@@ -83,34 +96,52 @@ class RepetitionEngine {
         let sectionsToConsider = leafSections.isEmpty ? filteredSections : leafSections
 
         // Separate favorites from regular sections
+        // Use custom multipliers from settings
         var favoriteSections = sectionsToConsider.filter { section in
             section.isFavoriteSection || section.isFromFavoriteFolder
-        }.sorted { $0.reviewPriority > $1.reviewPriority }
+        }.sorted {
+            $0.calculateReviewPriority(
+                favoriteBoost: settings.favoriteBoostMultiplier,
+                favoriteFolderBoost: settings.favoriteFolderBoostMultiplier
+            ) > $1.calculateReviewPriority(
+                favoriteBoost: settings.favoriteBoostMultiplier,
+                favoriteFolderBoost: settings.favoriteFolderBoostMultiplier
+            )
+        }
 
         var regularSections = sectionsToConsider.filter { section in
             !section.isFavoriteSection && !section.isFromFavoriteFolder
-        }.sorted { $0.reviewPriority > $1.reviewPriority }
+        }.sorted {
+            $0.calculateReviewPriority(
+                favoriteBoost: settings.favoriteBoostMultiplier,
+                favoriteFolderBoost: settings.favoriteFolderBoostMultiplier
+            ) > $1.calculateReviewPriority(
+                favoriteBoost: settings.favoriteBoostMultiplier,
+                favoriteFolderBoost: settings.favoriteFolderBoostMultiplier
+            )
+        }
 
-        // Shuffle within priority groups to add variety (shuffle top 50 of each)
+        // Shuffle within priority groups to add variety (use setting for top count)
+        let shuffleCount = settings.topSectionsShuffleCount
         if favoriteSections.count > 1 {
-            let topCount = min(50, favoriteSections.count)
+            let topCount = min(shuffleCount, favoriteSections.count)
             let topFavorites = Array(favoriteSections.prefix(topCount)).shuffled()
             let rest = Array(favoriteSections.dropFirst(topCount))
             favoriteSections = topFavorites + rest
         }
 
         if regularSections.count > 1 {
-            let topCount = min(50, regularSections.count)
+            let topCount = min(shuffleCount, regularSections.count)
             let topRegular = Array(regularSections.prefix(topCount)).shuffled()
             let rest = Array(regularSections.dropFirst(topCount))
             regularSections = topRegular + rest
         }
 
-        // Weighted random selection: 60% favorites, 40% regular
+        // Weighted random selection (use setting for favorite weight)
         cachedInterleavedSections = weightedRandomInterleave(
             favorites: favoriteSections,
             regular: regularSections,
-            favoriteWeight: 0.6
+            favoriteWeight: settings.favoriteSectionWeight
         )
         cacheTimestamp = Date()
     }
@@ -190,6 +221,7 @@ class RepetitionEngine {
 
     /// Check if section should be skipped (e.g., table of contents, empty sections)
     private func shouldSkipSection(_ section: MarkdownSection) -> Bool {
+        let settings = getUserSettings()
         let title = section.title.lowercased()
         let content = section.content.trimmingCharacters(in: .whitespacesAndNewlines)
 
@@ -209,12 +241,12 @@ class RepetitionEngine {
             }
         }
 
-        // Skip sections that are too short (less than 50 characters)
-        if content.count < 50 {
+        // Skip sections that are too short (use setting for minimum length)
+        if content.count < settings.minimumContentLength {
             return true
         }
 
-        // Skip sections that are mostly links (more than 70% of lines start with -)
+        // Skip sections that are mostly links (use setting for link ratio threshold)
         let lines = content.components(separatedBy: .newlines).filter { !$0.trimmingCharacters(in: .whitespaces).isEmpty }
         if lines.count > 3 {
             let linkLines = lines.filter { line in
@@ -222,7 +254,7 @@ class RepetitionEngine {
                 return trimmed.hasPrefix("-") || trimmed.hasPrefix("*") || trimmed.hasPrefix("[")
             }
             let linkRatio = Double(linkLines.count) / Double(lines.count)
-            if linkRatio > 0.7 {
+            if linkRatio > settings.linkRatioThreshold {
                 return true
             }
         }
@@ -343,7 +375,8 @@ class RepetitionEngine {
     // MARK: - Statistics
 
     /// Returns current review statistics
-    func getStatistics(dailyGoal: Int = Constants.Repetition.defaultDailyGoal) -> ReviewStatistics {
+    func getStatistics() -> ReviewStatistics {
+        let settings = getUserSettings()
         let sectionDescriptor = FetchDescriptor<MarkdownSection>()
         let recordDescriptor = FetchDescriptor<RepetitionRecord>()
 
@@ -355,7 +388,7 @@ class RepetitionEngine {
                 newSections: 0,
                 reviewedToday: 0,
                 currentStreak: 0,
-                dailyGoal: dailyGoal
+                dailyGoal: settings.dailyGoal
             )
         }
 
@@ -393,7 +426,7 @@ class RepetitionEngine {
             newSections: newSections,
             reviewedToday: reviewedToday,
             currentStreak: streak,
-            dailyGoal: dailyGoal
+            dailyGoal: settings.dailyGoal
         )
     }
 

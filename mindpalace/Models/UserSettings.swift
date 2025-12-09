@@ -11,11 +11,18 @@ enum AppTheme: String, Codable {
 final class UserSettings {
     var id: UUID
     var githubToken: String?
-    var autoSync: Bool
     var dailyGoal: Int // Number of sections to review per day
-    var showImages: Bool
     var syncGistId: String? // ID of the gist used for syncing
     var themeRawValue: String = AppTheme.system.rawValue // Store theme as raw value with default
+
+    // Repetition algorithm settings
+    var favoriteBoostMultiplier: Double = 1.5
+    var favoriteFolderBoostMultiplier: Double = 1.3
+    var favoriteSectionWeight: Double = 0.6
+    var minimumContentLength: Int = 50
+    var linkRatioThreshold: Double = 0.7
+    var topSectionsShuffleCount: Int = 50
+    var cacheDurationSeconds: Int = 30
 
     var theme: AppTheme {
         get { AppTheme(rawValue: themeRawValue) ?? .system }
@@ -25,19 +32,29 @@ final class UserSettings {
     init(
         id: UUID = UUID(),
         githubToken: String? = nil,
-        autoSync: Bool = true,
         dailyGoal: Int = 10,
-        showImages: Bool = true,
         syncGistId: String? = nil,
-        theme: AppTheme = .system
+        theme: AppTheme = .system,
+        favoriteBoostMultiplier: Double = 1.5,
+        favoriteFolderBoostMultiplier: Double = 1.3,
+        favoriteSectionWeight: Double = 0.6,
+        minimumContentLength: Int = 50,
+        linkRatioThreshold: Double = 0.7,
+        topSectionsShuffleCount: Int = 50,
+        cacheDurationSeconds: Int = 30
     ) {
         self.id = id
         self.githubToken = githubToken
-        self.autoSync = autoSync
         self.dailyGoal = dailyGoal
-        self.showImages = showImages
         self.syncGistId = syncGistId
         self.themeRawValue = theme.rawValue
+        self.favoriteBoostMultiplier = favoriteBoostMultiplier
+        self.favoriteFolderBoostMultiplier = favoriteFolderBoostMultiplier
+        self.favoriteSectionWeight = favoriteSectionWeight
+        self.minimumContentLength = minimumContentLength
+        self.linkRatioThreshold = linkRatioThreshold
+        self.topSectionsShuffleCount = topSectionsShuffleCount
+        self.cacheDurationSeconds = cacheDurationSeconds
     }
 
     /// Returns true if user is authenticated with GitHub

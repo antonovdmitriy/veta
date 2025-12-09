@@ -10,8 +10,6 @@ struct SettingsView: View {
     private var favoriteSections: [MarkdownSection]
 
     @State private var dailyGoal = Constants.Repetition.defaultDailyGoal
-    @State private var showImages = true
-    @State private var autoSync = true
     @State private var selectedTheme: AppTheme = .system
     @State private var githubToken = ""
     @State private var showingTokenInput = false
@@ -63,8 +61,6 @@ struct SettingsView: View {
 
                 Section {
                     Stepper("Daily Goal: \(dailyGoal)", value: $dailyGoal, in: 1...100)
-                    Toggle("Show Images", isOn: $showImages)
-                    Toggle("Auto Sync", isOn: $autoSync)
 
                     Picker("Theme", selection: $selectedTheme) {
                         Text("System").tag(AppTheme.system)
@@ -75,7 +71,10 @@ struct SettingsView: View {
                     NavigationLink {
                         RepetitionSettingsView()
                     } label: {
-                        Text("Repetition Algorithm")
+                        HStack {
+                            Label("Algorithm Settings", systemImage: "slider.horizontal.3")
+                            Spacer()
+                        }
                     }
                 } header: {
                     Text("Preferences")
@@ -125,8 +124,25 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                     }
 
-                    Link("GitHub Repository", destination: URL(string: "https://github.com")!)
-                    Link("Report Issue", destination: URL(string: "https://github.com")!)
+                    Link(destination: URL(string: "https://github.com/antonovdmitriy/mind-palace")!) {
+                        HStack {
+                            Label("GitHub Repository", systemImage: "link")
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    Link(destination: URL(string: "https://github.com/antonovdmitriy/mind-palace/issues")!) {
+                        HStack {
+                            Label("Report Issue", systemImage: "exclamationmark.bubble")
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 } header: {
                     Text("About")
                 }
@@ -136,12 +152,6 @@ struct SettingsView: View {
                 loadSettings()
             }
             .onChange(of: dailyGoal) { oldValue, newValue in
-                saveSettings()
-            }
-            .onChange(of: showImages) { oldValue, newValue in
-                saveSettings()
-            }
-            .onChange(of: autoSync) { oldValue, newValue in
                 saveSettings()
             }
             .onChange(of: selectedTheme) { oldValue, newValue in
@@ -171,8 +181,6 @@ struct SettingsView: View {
     private func loadSettings() {
         if let userSettings = currentSettings {
             dailyGoal = userSettings.dailyGoal
-            showImages = userSettings.showImages
-            autoSync = userSettings.autoSync
             selectedTheme = userSettings.theme
             githubToken = userSettings.githubToken ?? ""
         } else {
@@ -186,8 +194,6 @@ struct SettingsView: View {
     private func saveSettings() {
         if let userSettings = currentSettings {
             userSettings.dailyGoal = dailyGoal
-            userSettings.showImages = showImages
-            userSettings.autoSync = autoSync
             userSettings.theme = selectedTheme
             userSettings.githubToken = githubToken.isEmpty ? nil : githubToken
             try? modelContext.save()
@@ -224,13 +230,36 @@ struct TokenInputView: View {
                         .textContentType(.password)
                         .autocapitalization(.none)
                         .autocorrectionDisabled()
+                        .font(.system(.body, design: .monospaced))
                 } header: {
                     Text("GitHub Personal Access Token")
                 } footer: {
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text("This token will be used for all repositories to increase API limits and access private repos.")
-                        Text("Generate at: github.com/settings/tokens")
+                    VStack(alignment: .leading, spacing: 12) {
+                        Label("Increases API limits from 60 to 5,000 requests/hour", systemImage: "arrow.up.circle.fill")
                             .font(.caption)
+                            .foregroundStyle(.green)
+
+                        Label("Enables access to private repositories", systemImage: "lock.fill")
+                            .font(.caption)
+                            .foregroundStyle(.blue)
+
+                        Divider()
+                            .padding(.vertical, 4)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("How to generate:")
+                                .font(.caption)
+                                .fontWeight(.semibold)
+                            Text("1. Visit github.com/settings/tokens")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                            Text("2. Click 'Generate new token (classic)'")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                            Text("3. Select 'repo' scope for full access")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
             }
@@ -247,6 +276,7 @@ struct TokenInputView: View {
                     Button("Save") {
                         onSave()
                     }
+                    .fontWeight(.semibold)
                     .disabled(token.isEmpty)
                 }
             }

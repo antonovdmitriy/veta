@@ -15,8 +15,15 @@ struct FolderSelectionView: View {
         NavigationStack {
             VStack {
                 if isLoading {
-                    ProgressView("Loading folder structure...")
-                        .padding()
+                    VStack(spacing: 16) {
+                        ProgressView()
+                            .scaleEffect(1.5)
+                            .tint(.blue)
+                        Text("Loading folder structure...")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                    .frame(maxHeight: .infinity)
                 } else if let error = errorMessage {
                     VStack(spacing: 16) {
                         Image(systemName: "exclamationmark.triangle")
@@ -27,33 +34,63 @@ struct FolderSelectionView: View {
                     }
                     .padding()
                 } else {
-                    // Toolbar with actions
-                    HStack {
-                        Button("Select All") {
-                            selectAll()
+                    VStack(spacing: 0) {
+                        // Compact toolbar
+                        HStack(spacing: 12) {
+                            Menu {
+                                Button {
+                                    selectAll()
+                                } label: {
+                                    Label("Select All", systemImage: "checkmark.circle")
+                                }
+
+                                Button {
+                                    deselectAll()
+                                } label: {
+                                    Label("Deselect All", systemImage: "circle")
+                                }
+                            } label: {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "checklist")
+                                    Text("Actions")
+                                }
+                                .font(.subheadline)
+                                .fontWeight(.medium)
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 8)
+                                .background(Color.blue.opacity(0.1))
+                                .foregroundStyle(.blue)
+                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                            }
+
+                            Spacer()
+
+                            HStack(spacing: 6) {
+                                Image(systemName: "checkmark.circle.fill")
+                                    .font(.caption)
+                                    .foregroundStyle(.blue)
+                                Text("\(selectedCount) selected")
+                                    .font(.subheadline)
+                                    .fontWeight(.medium)
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 8)
+                            .background(Color(.secondarySystemBackground))
+                            .clipShape(RoundedRectangle(cornerRadius: 8))
                         }
-                        .buttonStyle(.bordered)
+                        .padding()
+                        .background(Color(.systemBackground))
 
-                        Button("Deselect All") {
-                            deselectAll()
+                        Divider()
+
+                        // Folder list
+                        List {
+                            ForEach($folderStructure) { $node in
+                                FolderRow(node: $node)
+                            }
                         }
-                        .buttonStyle(.bordered)
-
-                        Spacer()
-
-                        Text("\(selectedCount) selected")
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
+                        .listStyle(.inset)
                     }
-                    .padding()
-
-                    // Folder list
-                    List {
-                        ForEach($folderStructure) { $node in
-                            FolderRow(node: $node)
-                        }
-                    }
-                    .listStyle(.inset)
                 }
             }
             .navigationTitle("Select Folders")
