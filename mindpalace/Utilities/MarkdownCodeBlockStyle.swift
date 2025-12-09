@@ -20,9 +20,11 @@ struct AttributedText: UIViewRepresentable {
 
 struct HighlightedCodeBlock: View {
     let configuration: CodeBlockConfiguration
-    let highlighter = CodeHighlighter()
+    @Environment(\.colorScheme) var colorScheme
 
     var body: some View {
+        let highlighter = CodeHighlighter(colorScheme: colorScheme)
+
         VStack(alignment: .leading, spacing: 0) {
             // Заголовок с языком
             if let language = configuration.language, !language.isEmpty {

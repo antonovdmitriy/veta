@@ -4,10 +4,15 @@ import Highlightr
 
 struct CodeHighlighter {
     private let highlightr: Highlightr
+    private let colorScheme: ColorScheme
 
-    init() {
+    init(colorScheme: ColorScheme = .dark) {
         highlightr = Highlightr()!
-        highlightr.setTheme(to: "atom-one-dark")
+        self.colorScheme = colorScheme
+
+        // Выбираем тему в зависимости от цветовой схемы
+        let theme = colorScheme == .dark ? "atom-one-dark" : "atom-one-light"
+        highlightr.setTheme(to: theme)
     }
 
     func highlight(_ code: String, language: String?) -> NSAttributedString {
