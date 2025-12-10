@@ -74,8 +74,19 @@ struct FullDocumentView: View {
         if preloadedAnchors.contains(anchor) {
             // Anchor is loaded, scroll immediately
             print("✅ Found anchor: \(anchor)")
-            withAnimation(.easeInOut(duration: 0.3)) {
-                scrollProxy?.scrollTo(anchor, anchor: .top)
+
+            // Use section UUID instead of anchor for scrolling to avoid SwiftUI caching
+            let sections = file.sections.sorted(by: { $0.orderIndex < $1.orderIndex })
+            if let targetSection = sections.first(where: { titleToAnchor($0.title) == anchor }) {
+                print("🎯 Scrolling to section UUID: \(targetSection.id)")
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    scrollProxy?.scrollTo(targetSection.id, anchor: .top)
+                }
+            } else {
+                // Fallback to anchor-based scroll
+                withAnimation(.easeInOut(duration: 0.3)) {
+                    scrollProxy?.scrollTo(anchor, anchor: .top)
+                }
             }
         } else if attempt < maxAttempts {
             // Anchor not yet loaded, find and scroll to section by matching title
@@ -212,6 +223,7 @@ struct FullDocumentView: View {
                                             preloadedAnchors.insert(anchor)
                                             print("📌 Section registered with id: \(anchor)")
                                         }
+                                        .id(section.id)  // Add UUID-based id for scrolling
 
                                         // Section content
                                         Markdown(HTMLToMarkdownConverter.convertHTMLTables(in: section.content))
