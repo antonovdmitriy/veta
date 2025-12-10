@@ -2,15 +2,15 @@
 import PackageDescription
 
 let package = Package(
-    name: "MindPalace",
+    name: "Veta",
     platforms: [
         .iOS(.v17),
         .macOS(.v14)
     ],
     products: [
         .library(
-            name: "MindPalaceCore",
-            targets: ["MindPalaceCore"]
+            name: "VetaCore",
+            targets: ["VetaCore"]
         )
     ],
     dependencies: [
@@ -22,17 +22,17 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "MindPalaceCore",
+            name: "VetaCore",
             dependencies: [
                 .product(name: "MarkdownUI", package: "swift-markdown-ui"),
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
             ],
-            path: "MindPalace/Shared"
+            path: "Veta/Shared"
         ),
         .testTarget(
-            name: "MindPalaceCoreTests",
-            dependencies: ["MindPalaceCore"],
-            path: "MindPalace/Tests"
+            name: "VetaCoreTests",
+            dependencies: ["VetaCore"],
+            path: "Veta/Tests"
         )
     ]
 )

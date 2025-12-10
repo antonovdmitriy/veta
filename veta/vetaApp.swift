@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct mindpalaceApp: App {
+struct vetaApp: App {
     let modelContainer: ModelContainer
 
     init() {

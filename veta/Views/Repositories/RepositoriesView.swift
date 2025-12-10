@@ -103,7 +103,7 @@ struct RepositoriesView: View {
                     .font(.title2)
                     .fontWeight(.bold)
 
-                Text("Add a GitHub repository to start learning with Mind Palace")
+                Text("Add a GitHub repository to start learning with Veta")
                     .font(.body)
                     .foregroundStyle(.secondary)
                     .multilineTextAlignment(.center)

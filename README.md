@@ -1,14 +1,14 @@
-# Mind Palace
+# Veta
 
-**Mind Palace** is an iOS app for effective learning and retention of knowledge from your GitHub markdown notes.
+**Veta** is an iOS app for effective learning and retention of knowledge from your GitHub markdown notes.
 
-## Why Mind Palace?
+## Why Veta?
 
-Do you store your study notes, learning materials, or technical documentation in markdown files on GitHub? Mind Palace transforms these notes into interactive study cards using spaced repetition algorithm.
+Do you store your study notes, learning materials, or technical documentation in markdown files on GitHub? Veta transforms these notes into interactive study cards using spaced repetition algorithm.
 
 **The Problem:** Notes are stored in repositories but aren't reviewed systematically — knowledge fades away.
 
-**The Solution:** Mind Palace automatically breaks down your markdown documents into sections, tracks your learning progress for each section, and reminds you to review at the optimal time for long-term retention.
+**The Solution:** Veta automatically breaks down your markdown documents into sections, tracks your learning progress for each section, and reminds you to review at the optimal time for long-term retention.
 
 **Who is it for:**
 - 🎓 Students learning new topics
@@ -38,7 +38,7 @@ Do you store your study notes, learning materials, or technical documentation in
 ## Project Structure
 
 ```
-mindpalace/
+veta/
 ├── Models/              # Data models (SwiftData)
 ├── Services/            # Business logic services
 │   ├── GitHub/          # GitHub API integration
@@ -71,7 +71,7 @@ mindpalace/
 ### Installation
 
 1. Clone the repository
-2. Open `MindPalace.xcodeproj` in Xcode
+2. Open `veta.xcodeproj` in Xcode
 3. Build and run
 
 ### Adding Repositories

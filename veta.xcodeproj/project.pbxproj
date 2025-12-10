@@ -18,37 +18,37 @@
 			containerPortal = 048FE2782EE61E06001501ED /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 048FE27F2EE61E06001501ED;
-			remoteInfo = mindpalace;
+			remoteInfo = veta;
 		};
 		048FE2982EE61E08001501ED /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 048FE2782EE61E06001501ED /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 048FE27F2EE61E06001501ED;
-			remoteInfo = mindpalace;
+			remoteInfo = veta;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		048FE2802EE61E06001501ED /* mindpalace.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = mindpalace.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		048FE28D2EE61E08001501ED /* mindpalaceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mindpalaceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		048FE2972EE61E08001501ED /* mindpalaceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = mindpalaceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		048FE2802EE61E06001501ED /* veta.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = veta.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		048FE28D2EE61E08001501ED /* vetaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = vetaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		048FE2972EE61E08001501ED /* vetaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = vetaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		048FE2822EE61E06001501ED /* mindpalace */ = {
+		048FE2822EE61E06001501ED /* veta */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = mindpalace;
+			path = veta;
 			sourceTree = "<group>";
 		};
-		048FE2902EE61E08001501ED /* mindpalaceTests */ = {
+		048FE2902EE61E08001501ED /* vetaTests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = mindpalaceTests;
+			path = vetaTests;
 			sourceTree = "<group>";
 		};
-		048FE29A2EE61E08001501ED /* mindpalaceUITests */ = {
+		048FE29A2EE61E08001501ED /* vetaUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = mindpalaceUITests;
+			path = vetaUITests;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -84,9 +84,9 @@
 		048FE2772EE61E06001501ED = {
 			isa = PBXGroup;
 			children = (
-				048FE2822EE61E06001501ED /* mindpalace */,
-				048FE2902EE61E08001501ED /* mindpalaceTests */,
-				048FE29A2EE61E08001501ED /* mindpalaceUITests */,
+				048FE2822EE61E06001501ED /* veta */,
+				048FE2902EE61E08001501ED /* vetaTests */,
+				048FE29A2EE61E08001501ED /* vetaUITests */,
 				048FE2E62EE620BB001501ED /* Frameworks */,
 				048FE2812EE61E06001501ED /* Products */,
 			);
@@ -95,9 +95,9 @@
 		048FE2812EE61E06001501ED /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				048FE2802EE61E06001501ED /* mindpalace.app */,
-				048FE28D2EE61E08001501ED /* mindpalaceTests.xctest */,
-				048FE2972EE61E08001501ED /* mindpalaceUITests.xctest */,
+				048FE2802EE61E06001501ED /* veta.app */,
+				048FE28D2EE61E08001501ED /* vetaTests.xctest */,
+				048FE2972EE61E08001501ED /* vetaUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,9 +112,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		048FE27F2EE61E06001501ED /* mindpalace */ = {
+		048FE27F2EE61E06001501ED /* veta */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 048FE2A12EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalace" */;
+			buildConfigurationList = 048FE2A12EE61E08001501ED /* Build configuration list for PBXNativeTarget "veta" */;
 			buildPhases = (
 				048FE27C2EE61E06001501ED /* Sources */,
 				048FE27D2EE61E06001501ED /* Frameworks */,
@@ -125,21 +125,21 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				048FE2822EE61E06001501ED /* mindpalace */,
+				048FE2822EE61E06001501ED /* veta */,
 			);
-			name = mindpalace;
+			name = veta;
 			packageProductDependencies = (
 				048FE2E72EE620BB001501ED /* MarkdownUI */,
 				048FE2E92EE620C1001501ED /* KeychainAccess */,
 				048FE2F62EE63182001501ED /* Highlightr */,
 			);
-			productName = mindpalace;
-			productReference = 048FE2802EE61E06001501ED /* mindpalace.app */;
+			productName = veta;
+			productReference = 048FE2802EE61E06001501ED /* veta.app */;
 			productType = "com.apple.product-type.application";
 		};
-		048FE28C2EE61E08001501ED /* mindpalaceTests */ = {
+		048FE28C2EE61E08001501ED /* vetaTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 048FE2A42EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalaceTests" */;
+			buildConfigurationList = 048FE2A42EE61E08001501ED /* Build configuration list for PBXNativeTarget "vetaTests" */;
 			buildPhases = (
 				048FE2892EE61E08001501ED /* Sources */,
 				048FE28A2EE61E08001501ED /* Frameworks */,
@@ -151,18 +151,18 @@
 				048FE28F2EE61E08001501ED /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				048FE2902EE61E08001501ED /* mindpalaceTests */,
+				048FE2902EE61E08001501ED /* vetaTests */,
 			);
-			name = mindpalaceTests;
+			name = vetaTests;
 			packageProductDependencies = (
 			);
-			productName = mindpalaceTests;
-			productReference = 048FE28D2EE61E08001501ED /* mindpalaceTests.xctest */;
+			productName = vetaTests;
+			productReference = 048FE28D2EE61E08001501ED /* vetaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
-		048FE2962EE61E08001501ED /* mindpalaceUITests */ = {
+		048FE2962EE61E08001501ED /* vetaUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 048FE2A72EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalaceUITests" */;
+			buildConfigurationList = 048FE2A72EE61E08001501ED /* Build configuration list for PBXNativeTarget "vetaUITests" */;
 			buildPhases = (
 				048FE2932EE61E08001501ED /* Sources */,
 				048FE2942EE61E08001501ED /* Frameworks */,
@@ -174,13 +174,13 @@
 				048FE2992EE61E08001501ED /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				048FE29A2EE61E08001501ED /* mindpalaceUITests */,
+				048FE29A2EE61E08001501ED /* vetaUITests */,
 			);
-			name = mindpalaceUITests;
+			name = vetaUITests;
 			packageProductDependencies = (
 			);
-			productName = mindpalaceUITests;
-			productReference = 048FE2972EE61E08001501ED /* mindpalaceUITests.xctest */;
+			productName = vetaUITests;
+			productReference = 048FE2972EE61E08001501ED /* vetaUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -206,7 +206,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 048FE27B2EE61E06001501ED /* Build configuration list for PBXProject "mindpalace" */;
+			buildConfigurationList = 048FE27B2EE61E06001501ED /* Build configuration list for PBXProject "veta" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -225,9 +225,9 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				048FE27F2EE61E06001501ED /* mindpalace */,
-				048FE28C2EE61E08001501ED /* mindpalaceTests */,
-				048FE2962EE61E08001501ED /* mindpalaceUITests */,
+				048FE27F2EE61E06001501ED /* veta */,
+				048FE28C2EE61E08001501ED /* vetaTests */,
+				048FE2962EE61E08001501ED /* vetaUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -283,12 +283,12 @@
 /* Begin PBXTargetDependency section */
 		048FE28F2EE61E08001501ED /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 048FE27F2EE61E06001501ED /* mindpalace */;
+			target = 048FE27F2EE61E06001501ED /* veta */;
 			targetProxy = 048FE28E2EE61E08001501ED /* PBXContainerItemProxy */;
 		};
 		048FE2992EE61E08001501ED /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 048FE27F2EE61E06001501ED /* mindpalace */;
+			target = 048FE27F2EE61E06001501ED /* veta */;
 			targetProxy = 048FE2982EE61E08001501ED /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -436,7 +436,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalace;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.veta;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -469,7 +469,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalace;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.veta;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -491,7 +491,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalaceTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.vetaTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -499,7 +499,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mindpalace.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/mindpalace";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/veta.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/veta";
 			};
 			name = Debug;
 		};
@@ -513,7 +513,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalaceTests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.vetaTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -521,7 +521,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/mindpalace.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/mindpalace";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/veta.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/veta";
 			};
 			name = Release;
 		};
@@ -533,7 +533,7 @@
 				DEVELOPMENT_TEAM = QDY6Y4W8FU;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalaceUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.vetaUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -541,7 +541,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = mindpalace;
+				TEST_TARGET_NAME = veta;
 			};
 			name = Debug;
 		};
@@ -553,7 +553,7 @@
 				DEVELOPMENT_TEAM = QDY6Y4W8FU;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.mindpalaceUITests;
+				PRODUCT_BUNDLE_IDENTIFIER = com.dimaantonov.vetaUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
@@ -561,14 +561,14 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = mindpalace;
+				TEST_TARGET_NAME = veta;
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		048FE27B2EE61E06001501ED /* Build configuration list for PBXProject "mindpalace" */ = {
+		048FE27B2EE61E06001501ED /* Build configuration list for PBXProject "veta" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				048FE29F2EE61E08001501ED /* Debug */,
@@ -577,7 +577,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		048FE2A12EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalace" */ = {
+		048FE2A12EE61E08001501ED /* Build configuration list for PBXNativeTarget "veta" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				048FE2A22EE61E08001501ED /* Debug */,
@@ -586,7 +586,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		048FE2A42EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalaceTests" */ = {
+		048FE2A42EE61E08001501ED /* Build configuration list for PBXNativeTarget "vetaTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				048FE2A52EE61E08001501ED /* Debug */,
@@ -595,7 +595,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		048FE2A72EE61E08001501ED /* Build configuration list for PBXNativeTarget "mindpalaceUITests" */ = {
+		048FE2A72EE61E08001501ED /* Build configuration list for PBXNativeTarget "vetaUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				048FE2A82EE61E08001501ED /* Debug */,

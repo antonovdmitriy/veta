@@ -17,8 +17,8 @@ enum Constants {
 
     // MARK: - Gist
     enum Gist {
-        static let progressFileName = "mindpalace_progress.json"
-        static let gistDescription = "Mind Palace - Learning Progress Sync"
+        static let progressFileName = "veta_progress.json"
+        static let gistDescription = "Veta - Learning Progress Sync"
     }
 
     // MARK: - Markdown
@@ -32,8 +32,8 @@ enum Constants {
 
     // MARK: - Storage
     enum Storage {
-        static let containerName = "MindPalaceContainer"
-        static let keychainService = "com.mindpalace.app"
+        static let containerName = "VetaContainer"
+        static let keychainService = "com.veta.app"
     }
 
     // MARK: - Repetition

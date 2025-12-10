@@ -1,13 +1,13 @@
 //
-//  mindpalaceUITestsLaunchTests.swift
-//  mindpalaceUITests
+//  vetaUITestsLaunchTests.swift
+//  vetaUITests
 //
 //  Created by Dmitrii Antonov on 2025-12-07.
 //
 
 import XCTest
 
-final class mindpalaceUITestsLaunchTests: XCTestCase {
+final class vetaUITestsLaunchTests: XCTestCase {
 
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true

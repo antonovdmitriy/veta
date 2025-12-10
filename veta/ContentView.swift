@@ -1,6 +1,6 @@
 //
 //  ContentView.swift
-//  mindpalace
+//  veta
 //
 //  Created by Dmitrii Antonov on 2025-12-07.
 //
