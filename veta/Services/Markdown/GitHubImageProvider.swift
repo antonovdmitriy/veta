@@ -71,9 +71,17 @@ struct GitHubImageProvider: ImageProvider {
             resolvedPath = fileDirectory.isEmpty ? relativePath : "\(fileDirectory)/\(relativePath)"
         }
 
-        // Build GitHub raw URL
+        // Check if asset exists locally first (offline support!)
+        if AssetManager.shared.assetExists(owner: repository.owner, repo: repository.name, path: resolvedPath) {
+            let localURL = AssetManager.shared.localURL(owner: repository.owner, repo: repository.name, path: resolvedPath)
+            print("📁 Using local asset: \(resolvedPath)")
+            return localURL
+        }
+
+        // Fallback to GitHub raw URL
         // Format: https://raw.githubusercontent.com/owner/repo/branch/path
         let urlString = "\(Constants.GitHub.rawContentURL)/\(repository.owner)/\(repository.name)/\(branch)/\(resolvedPath)"
+        print("🌐 Downloading from GitHub: \(resolvedPath)")
 
         return URL(string: urlString)
     }

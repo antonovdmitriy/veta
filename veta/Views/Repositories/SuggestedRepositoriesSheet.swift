@@ -86,30 +86,13 @@ struct SuggestedRepositoriesSheet: View {
 
             modelContext.insert(repository)
 
-            // Fetch repository info and files
+            // Just get repository info (don't create file entries yet - sync will do that)
             let service = GitHubService()
 
             do {
                 // Get repository info
                 let repoInfo = try await service.getRepository(owner: components.owner, name: components.name)
                 repository.defaultBranch = repoInfo.defaultBranch
-
-                // Fetch markdown files using Git Trees API (single request!)
-                let files = try await service.listMarkdownFiles(
-                    owner: components.owner,
-                    repo: components.name,
-                    branch: repository.defaultBranch
-                )
-
-                for file in files {
-                    let markdownFile = MarkdownFile(
-                        path: file.path,
-                        fileName: file.name,
-                        sha: file.sha,
-                        repository: repository
-                    )
-                    modelContext.insert(markdownFile)
-                }
 
                 try modelContext.save()
 

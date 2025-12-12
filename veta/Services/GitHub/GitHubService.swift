@@ -99,6 +99,32 @@ class GitHubService: Sendable {
         return content
     }
 
+    /// Downloads repository archive as zip
+    func downloadArchive(owner: String, repo: String, ref: String = "main") async throws -> Data {
+        let urlString = "\(Constants.GitHub.baseURL)/repos/\(owner)/\(repo)/zipball/\(ref)"
+        guard let url = URL(string: urlString) else {
+            throw GitHubAPIError.invalidURL
+        }
+
+        var request = URLRequest(url: url)
+        request.setValue("application/vnd.github+json", forHTTPHeaderField: "Accept")
+        request.setValue("2022-11-28", forHTTPHeaderField: "X-GitHub-Api-Version")
+
+        if let token = token {
+            request.setValue("Bearer \(token)", forHTTPHeaderField: "Authorization")
+        }
+
+        let (data, response) = try await urlSession.data(for: request)
+
+        guard let httpResponse = response as? HTTPURLResponse else {
+            throw GitHubAPIError.unknownError(statusCode: -1)
+        }
+
+        try validateResponse(httpResponse)
+
+        return data
+    }
+
     // MARK: - Rate Limiting
 
     func getRateLimit() async throws -> GitHubRateLimit {

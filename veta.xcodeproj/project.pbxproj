@@ -10,6 +10,7 @@
 		048FE2E82EE620BB001501ED /* MarkdownUI in Frameworks */ = {isa = PBXBuildFile; productRef = 048FE2E72EE620BB001501ED /* MarkdownUI */; };
 		048FE2EA2EE620C1001501ED /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = 048FE2E92EE620C1001501ED /* KeychainAccess */; };
 		048FE2F72EE63182001501ED /* Highlightr in Frameworks */ = {isa = PBXBuildFile; productRef = 048FE2F62EE63182001501ED /* Highlightr */; };
+		048FE2F82EE63183001501ED /* ZIPFoundation in Frameworks */ = {isa = PBXBuildFile; productRef = 048FE2F72EE63183001501ED /* ZIPFoundation */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 				048FE2EA2EE620C1001501ED /* KeychainAccess in Frameworks */,
 				048FE2F72EE63182001501ED /* Highlightr in Frameworks */,
 				048FE2E82EE620BB001501ED /* MarkdownUI in Frameworks */,
+				048FE2F82EE63183001501ED /* ZIPFoundation in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -132,6 +134,7 @@
 				048FE2E72EE620BB001501ED /* MarkdownUI */,
 				048FE2E92EE620C1001501ED /* KeychainAccess */,
 				048FE2F62EE63182001501ED /* Highlightr */,
+				048FE2F72EE63183001501ED /* ZIPFoundation */,
 			);
 			productName = veta;
 			productReference = 048FE2802EE61E06001501ED /* veta.app */;
@@ -219,6 +222,7 @@
 				048FE2E42EE61FCA001501ED /* XCRemoteSwiftPackageReference "swift-markdown-ui" */,
 				048FE2E52EE61FDE001501ED /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				048FE2F52EE63179001501ED /* XCRemoteSwiftPackageReference "Highlightr" */,
+				048FE2F62EE63180001501ED /* XCRemoteSwiftPackageReference "ZIPFoundation" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 048FE2812EE61E06001501ED /* Products */;
@@ -633,6 +637,14 @@
 				minimumVersion = 2.3.0;
 			};
 		};
+		048FE2F62EE63180001501ED /* XCRemoteSwiftPackageReference "ZIPFoundation" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/weichsel/ZIPFoundation";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.9.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -650,6 +662,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 048FE2F52EE63179001501ED /* XCRemoteSwiftPackageReference "Highlightr" */;
 			productName = Highlightr;
+		};
+		048FE2F72EE63183001501ED /* ZIPFoundation */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 048FE2F62EE63180001501ED /* XCRemoteSwiftPackageReference "ZIPFoundation" */;
+			productName = ZIPFoundation;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

@@ -72,22 +72,32 @@ class RepetitionEngine {
         )
 
         guard let allSections = try? modelContext.fetch(descriptor) else {
+            print("❌ Failed to fetch sections from database")
             cachedInterleavedSections = []
             return
         }
+
+        print("📊 Total sections in database: \(allSections.count)")
 
         // Filter sections based on repository path settings and ignored status
         let filteredSections = allSections.filter { section in
             guard let file = section.file,
                   let repository = file.repository else {
+                print("⚠️ Section '\(section.title)' has no file or repository")
                 return false
             }
             // Skip ignored sections
             if section.isIgnored {
                 return false
             }
-            return repository.shouldIncludePath(file.path)
+            let shouldInclude = repository.shouldIncludePath(file.path)
+            if !shouldInclude {
+                print("⚠️ Section '\(section.title)' in '\(file.path)' filtered out by path rules")
+            }
+            return shouldInclude
         }
+
+        print("📊 Filtered sections: \(filteredSections.count)")
 
         // Build efficient lookup for leaf sections
         let leafSections = findLeafSections(in: filteredSections)
@@ -144,6 +154,8 @@ class RepetitionEngine {
             favoriteWeight: settings.favoriteSectionWeight
         )
         cacheTimestamp = Date()
+
+        print("✅ Cache rebuilt: \(cachedInterleavedSections.count) sections ready for review")
     }
 
     /// Weighted random interleave: randomly select from favorites or regular based on weight

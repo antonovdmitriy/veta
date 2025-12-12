@@ -19,6 +19,9 @@ let package = Package(
 
         // Keychain access
         .package(url: "https://github.com/kishikawakatsumi/KeychainAccess", from: "4.2.2"),
+
+        // ZIP archive support
+        .package(url: "https://github.com/weichsel/ZIPFoundation", from: "0.9.0"),
     ],
     targets: [
         .target(
@@ -26,6 +29,7 @@ let package = Package(
             dependencies: [
                 .product(name: "MarkdownUI", package: "swift-markdown-ui"),
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
+                .product(name: "ZIPFoundation", package: "ZIPFoundation"),
             ],
             path: "Veta/Shared"
         ),
