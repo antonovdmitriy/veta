@@ -11,6 +11,7 @@ struct SettingsView: View {
 
     @State private var dailyGoal = Constants.Repetition.defaultDailyGoal
     @State private var selectedTheme: AppTheme = .system
+    @State private var baseFontSize: Double = 16.0
     @State private var githubToken = ""
     @State private var showingTokenInput = false
     @State private var showingResetConfirmation = false
@@ -66,6 +67,10 @@ struct SettingsView: View {
                         Text("System").tag(AppTheme.system)
                         Text("Light").tag(AppTheme.light)
                         Text("Dark").tag(AppTheme.dark)
+                    }
+
+                    FontSizeSlider(fontSize: $baseFontSize) {
+                        saveSettings()
                     }
 
                     NavigationLink {
@@ -182,6 +187,7 @@ struct SettingsView: View {
         if let userSettings = currentSettings {
             dailyGoal = userSettings.dailyGoal
             selectedTheme = userSettings.theme
+            baseFontSize = userSettings.baseFontSize
             githubToken = userSettings.githubToken ?? ""
         } else {
             // Create default settings
@@ -195,6 +201,7 @@ struct SettingsView: View {
         if let userSettings = currentSettings {
             userSettings.dailyGoal = dailyGoal
             userSettings.theme = selectedTheme
+            userSettings.baseFontSize = baseFontSize
             userSettings.githubToken = githubToken.isEmpty ? nil : githubToken
             try? modelContext.save()
         }
@@ -213,6 +220,37 @@ struct SettingsView: View {
             try modelContext.save()
         } catch {
             print("❌ Error resetting progress: \(error)")
+        }
+    }
+}
+
+struct FontSizeSlider: View {
+    @Binding var fontSize: Double
+    let onSave: () -> Void
+
+    @State private var localValue: Double
+
+    init(fontSize: Binding<Double>, onSave: @escaping () -> Void) {
+        self._fontSize = fontSize
+        self.onSave = onSave
+        self._localValue = State(initialValue: fontSize.wrappedValue)
+    }
+
+    var body: some View {
+        HStack {
+            Text("Font Size")
+            Spacer()
+            Slider(value: $localValue, in: 12...24, step: 1, onEditingChanged: { isEditing in
+                if !isEditing {
+                    fontSize = localValue
+                    onSave()
+                }
+            })
+            .frame(width: 150)
+            Text("\(Int(localValue))pt")
+                .foregroundStyle(.secondary)
+                .frame(width: 40, alignment: .trailing)
+                .monospacedDigit()
         }
     }
 }

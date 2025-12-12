@@ -1,14 +1,20 @@
 import SwiftUI
+import SwiftData
 import MarkdownUI
 
 struct FullDocumentView: View {
     let file: MarkdownFile
     @Environment(\.dismiss) private var dismiss
     @Environment(\.openURL) private var defaultOpenURL
+    @Query private var settings: [UserSettings]
     @State private var isLoading = true
     @State private var scrollTarget: String?
     @State private var preloadedAnchors: Set<String> = []
     @State private var showBackToTop = false
+
+    private var baseFontSize: CGFloat {
+        CGFloat(settings.first?.baseFontSize ?? 16.0)
+    }
 
     // Get content before first section (usually table of contents)
     private var preambleContent: String? {
@@ -140,7 +146,7 @@ struct FullDocumentView: View {
                                         )
                                     )
                                     .markdownBlockStyle(\.codeBlock) { configuration in
-                                        HighlightedCodeBlock(configuration: configuration)
+                                        HighlightedCodeBlock(configuration: configuration, baseFontSize: baseFontSize)
                                     }
                                     .markdownTheme(.gitHub)
                                     .environment(\.openURL, OpenURLAction { url in
@@ -193,7 +199,7 @@ struct FullDocumentView: View {
                                                 )
                                             )
                                             .markdownBlockStyle(\.codeBlock) { configuration in
-                                                HighlightedCodeBlock(configuration: configuration)
+                                                HighlightedCodeBlock(configuration: configuration, baseFontSize: baseFontSize)
                                             }
                                             .markdownTheme(.gitHub)
                                             .environment(\.openURL, OpenURLAction { url in
@@ -236,7 +242,7 @@ struct FullDocumentView: View {
                                                 )
                                             )
                                             .markdownBlockStyle(\.codeBlock) { configuration in
-                                                HighlightedCodeBlock(configuration: configuration)
+                                                HighlightedCodeBlock(configuration: configuration, baseFontSize: baseFontSize)
                                             }
                                             .markdownTheme(.gitHub)
                                             .environment(\.openURL, OpenURLAction { url in

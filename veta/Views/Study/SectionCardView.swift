@@ -12,6 +12,11 @@ struct SectionCardView: View {
     @State private var showingIgnoreConfirmation = false
     @State private var isLoadingContent = false
     @Environment(\.openURL) private var defaultOpenURL
+    @Query private var settings: [UserSettings]
+
+    private var baseFontSize: CGFloat {
+        CGFloat(settings.first?.baseFontSize ?? 16.0)
+    }
 
     // Helper function for level colors
     private func levelColor(for level: Int) -> Color {
@@ -278,7 +283,15 @@ struct SectionCardView: View {
                                         )
                                     )
                                     .markdownBlockStyle(\.codeBlock) { configuration in
-                                        HighlightedCodeBlock(configuration: configuration)
+                                        HighlightedCodeBlock(configuration: configuration, baseFontSize: baseFontSize * 0.9)
+                                    }
+                                    .markdownTextStyle(\.text) {
+                                        FontSize(baseFontSize)
+                                    }
+                                    .markdownTextStyle(\.code) {
+                                        FontSize(baseFontSize * 0.9)
+                                        FontFamilyVariant(.monospaced)
+                                        BackgroundColor(.secondary.opacity(0.1))
                                     }
                                     .markdownTheme(.gitHub)
                                     .environment(\.openURL, OpenURLAction { url in

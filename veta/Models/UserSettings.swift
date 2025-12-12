@@ -14,6 +14,7 @@ final class UserSettings {
     var dailyGoal: Int // Number of sections to review per day
     var syncGistId: String? // ID of the gist used for syncing
     var themeRawValue: String = AppTheme.system.rawValue // Store theme as raw value with default
+    var baseFontSize: Double = 16.0 // Base font size for content (12-24pt)
 
     // Repetition algorithm settings
     var favoriteBoostMultiplier: Double = 1.5
@@ -35,6 +36,7 @@ final class UserSettings {
         dailyGoal: Int = 10,
         syncGistId: String? = nil,
         theme: AppTheme = .system,
+        baseFontSize: Double = 16.0,
         favoriteBoostMultiplier: Double = 1.5,
         favoriteFolderBoostMultiplier: Double = 1.3,
         favoriteSectionWeight: Double = 0.6,
@@ -48,6 +50,7 @@ final class UserSettings {
         self.dailyGoal = dailyGoal
         self.syncGistId = syncGistId
         self.themeRawValue = theme.rawValue
+        self.baseFontSize = baseFontSize
         self.favoriteBoostMultiplier = favoriteBoostMultiplier
         self.favoriteFolderBoostMultiplier = favoriteFolderBoostMultiplier
         self.favoriteSectionWeight = favoriteSectionWeight
