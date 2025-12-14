@@ -49,6 +49,7 @@ struct RepositoriesView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
+                    .disabled(isSyncing)
                 }
 
                 ToolbarItem(placement: .topBarLeading) {
