@@ -83,6 +83,28 @@ struct FolderSelectionView: View {
 
                         Divider()
 
+                        // Help text
+                        VStack(alignment: .leading, spacing: 8) {
+                            Text("Select folders and files to include in your study sessions. Deselecting a folder automatically deselects all nested items.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .fixedSize(horizontal: false, vertical: true)
+                            HStack(spacing: 16) {
+                                Label("Folder", systemImage: "folder.fill")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                Label("File", systemImage: "doc.text.fill")
+                                    .font(.caption2)
+                                    .foregroundStyle(.secondary)
+                                Label("Favorite (higher priority)", systemImage: "star.fill")
+                                    .font(.caption2)
+                                    .foregroundStyle(.yellow)
+                            }
+                        }
+                        .padding(.horizontal)
+                        .padding(.top, 8)
+                        .padding(.bottom, 4)
+
                         // Folder list
                         List {
                             ForEach($folderStructure) { $node in
@@ -212,9 +234,26 @@ struct FolderSelectionView: View {
             allNodes[path] = FolderNode(
                 name: name,
                 path: path,
+                isFile: false,
                 isSelected: isSelected,
                 isFavorite: isFavorite,
                 fileCount: fileCount,
+                children: []
+            )
+        }
+
+        // Add file nodes
+        for file in files {
+            let isSelected = repository.shouldIncludePath(file.path)
+            let isFavorite = repository.favoritePaths.contains(file.path)
+
+            allNodes[file.path] = FolderNode(
+                name: file.name,
+                path: file.path,
+                isFile: true,
+                isSelected: isSelected,
+                isFavorite: isFavorite,
+                fileCount: 0,
                 children: []
             )
         }
@@ -223,7 +262,7 @@ struct FolderSelectionView: View {
         for (path, var node) in allNodes {
             let components = path.components(separatedBy: "/")
 
-            // Find all direct children
+            // Find all direct children (both folders and files)
             var children: [FolderNode] = []
             for (childPath, childNode) in allNodes {
                 let childComponents = childPath.components(separatedBy: "/")
@@ -237,16 +276,27 @@ struct FolderSelectionView: View {
                 }
             }
 
-            node.children = children.sorted { $0.name < $1.name }
+            // Sort: folders first, then files, alphabetically within each group
+            node.children = children.sorted { a, b in
+                if a.isFile != b.isFile {
+                    return !a.isFile // folders before files
+                }
+                return a.name < b.name
+            }
             allNodes[path] = node
         }
 
-        // Return only root level folders
+        // Return only root level items (folders and files)
         let rootNodes = allNodes.values.filter { node in
             !node.path.contains("/") || node.path.components(separatedBy: "/").count == 1
         }
 
-        return rootNodes.sorted { $0.name < $1.name }
+        return rootNodes.sorted { a, b in
+            if a.isFile != b.isFile {
+                return !a.isFile // folders before files
+            }
+            return a.name < b.name
+        }
     }
 
     private func selectAll() {
@@ -331,14 +381,16 @@ struct FolderNode: Identifiable {
     let id = UUID()
     let name: String
     let path: String
+    let isFile: Bool
     var isSelected: Bool
     var isFavorite: Bool
     var fileCount: Int
     var children: [FolderNode]
 
-    init(name: String, path: String, isSelected: Bool, isFavorite: Bool = false, fileCount: Int, children: [FolderNode] = []) {
+    init(name: String, path: String, isFile: Bool = false, isSelected: Bool, isFavorite: Bool = false, fileCount: Int = 0, children: [FolderNode] = []) {
         self.name = name
         self.path = path
+        self.isFile = isFile
         self.isSelected = isSelected
         self.isFavorite = isFavorite
         self.fileCount = fileCount
@@ -369,7 +421,7 @@ struct FolderRow: View {
                 }
 
                 // Expand/collapse chevron for folders with children
-                if !node.children.isEmpty {
+                if !node.isFile && !node.children.isEmpty {
                     Button {
                         withAnimation(.easeInOut(duration: 0.2)) {
                             isExpanded.toggle()
@@ -386,19 +438,26 @@ struct FolderRow: View {
                         .frame(width: 16)
                 }
 
-                Image(systemName: node.children.isEmpty ? "doc.text" : "folder.fill")
+                Image(systemName: node.isFile ? "doc.text.fill" : "folder.fill")
                     .foregroundStyle(node.isSelected ? .blue : .secondary)
                     .font(.body)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(node.name)
                         .font(.subheadline)
-                        .fontWeight(level == 0 ? .semibold : .regular)
+                        .fontWeight(level == 0 && !node.isFile ? .semibold : .regular)
 
-                    if node.fileCount > 0 {
-                        Text("\(node.fileCount) files")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
+                    if !node.isFile {
+                        if node.fileCount > 0 {
+                            Text("\(node.fileCount) markdown \(node.fileCount == 1 ? "file" : "files")")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                        } else if node.children.isEmpty {
+                            Text("empty folder")
+                                .font(.caption2)
+                                .foregroundStyle(.secondary)
+                                .italic()
+                        }
                     }
                 }
 
@@ -414,8 +473,21 @@ struct FolderRow: View {
                 }
                 .buttonStyle(.plain)
 
-                Toggle("", isOn: $node.isSelected)
-                    .labelsHidden()
+                Toggle("", isOn: Binding(
+                    get: { node.isSelected },
+                    set: { newValue in
+                        node.isSelected = newValue
+                        // If deselecting parent, deselect all children
+                        if !newValue {
+                            deselectChildren(&node)
+                        }
+                        // If selecting parent and it has children, select them too
+                        else if !node.children.isEmpty {
+                            selectChildren(&node)
+                        }
+                    }
+                ))
+                .labelsHidden()
             }
             .padding(.vertical, 4)
             .contentShape(Rectangle())
@@ -429,6 +501,24 @@ struct FolderRow: View {
                     )
                 }
             }
+        }
+    }
+
+    private func selectChildren(_ node: inout FolderNode) {
+        node.children = node.children.map { child in
+            var updated = child
+            updated.isSelected = true
+            selectChildren(&updated)
+            return updated
+        }
+    }
+
+    private func deselectChildren(_ node: inout FolderNode) {
+        node.children = node.children.map { child in
+            var updated = child
+            updated.isSelected = false
+            deselectChildren(&updated)
+            return updated
         }
     }
 }
