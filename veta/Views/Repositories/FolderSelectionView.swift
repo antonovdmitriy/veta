@@ -134,18 +134,6 @@ struct FolderSelectionView: View {
                     }
                 }
 
-                ToolbarItem(placement: .principal) {
-                    if !folderStructure.isEmpty {
-                        Button {
-                            loadFolderStructure()
-                        } label: {
-                            Image(systemName: "arrow.clockwise")
-                                .font(.body)
-                        }
-                        .disabled(isLoading)
-                    }
-                }
-
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         savePaths()
