@@ -82,7 +82,7 @@ struct RepositoriesView: View {
                 }
             }
             .overlay {
-                if isSyncing {
+                if isSyncing, let syncManager = syncManager {
                     ZStack {
                         // Semi-transparent background to block interactions
                         Color.black.opacity(0.3)
@@ -96,9 +96,21 @@ struct RepositoriesView: View {
                                 .tint(.blue)
 
                             VStack(spacing: 4) {
-                                Text("Syncing repositories...")
-                                    .font(.subheadline)
-                                    .fontWeight(.medium)
+                                if syncManager.totalRepositories > 1 {
+                                    Text("Syncing \(syncManager.currentRepositoryIndex)/\(syncManager.totalRepositories)")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                    if !syncManager.currentRepositoryName.isEmpty {
+                                        Text(syncManager.currentRepositoryName)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                            .lineLimit(1)
+                                    }
+                                } else {
+                                    Text("Syncing repository...")
+                                        .font(.subheadline)
+                                        .fontWeight(.medium)
+                                }
                                 Text("\(Int(syncProgress * 100))%")
                                     .font(.caption)
                                     .foregroundStyle(.secondary)
@@ -255,7 +267,14 @@ struct RepositoriesView: View {
             let progressTask = Task {
                 while !Task.isCancelled {
                     await MainActor.run {
-                        syncProgress = syncManager.progress
+                        // Calculate overall progress across all repositories
+                        if syncManager.totalRepositories > 0 {
+                            let completedRepos = Double(syncManager.currentRepositoryIndex - 1)
+                            let currentRepoProgress = syncManager.progress
+                            syncProgress = (completedRepos + currentRepoProgress) / Double(syncManager.totalRepositories)
+                        } else {
+                            syncProgress = syncManager.progress
+                        }
                     }
                     try? await Task.sleep(for: .milliseconds(100))
                 }

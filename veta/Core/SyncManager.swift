@@ -10,6 +10,9 @@ class SyncManager {
     var isSyncing = false
     var lastError: Error?
     var progress: Double = 0.0
+    var currentRepositoryName: String = ""
+    var totalRepositories: Int = 0
+    var currentRepositoryIndex: Int = 0
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
@@ -172,9 +175,19 @@ class SyncManager {
             return
         }
 
-        for repository in repositories {
+        totalRepositories = repositories.count
+
+        for (index, repository) in repositories.enumerated() {
+            currentRepositoryIndex = index + 1
+            currentRepositoryName = repository.name
+
             try await syncRepository(repository)
         }
+
+        // Reset after completion
+        currentRepositoryName = ""
+        totalRepositories = 0
+        currentRepositoryIndex = 0
     }
 
     // MARK: - Private Methods
