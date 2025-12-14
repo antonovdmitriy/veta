@@ -10,7 +10,6 @@ struct FolderSelectionView: View {
     @State private var folderStructure: [FolderNode] = []
     @State private var isLoading = false
     @State private var errorMessage: String?
-    @State private var showingActions = false
 
     var body: some View {
         NavigationStack {
@@ -38,22 +37,41 @@ struct FolderSelectionView: View {
                     VStack(spacing: 0) {
                         // Compact toolbar
                         HStack(spacing: 12) {
-                            Button {
-                                showingActions = true
-                            } label: {
-                                HStack(spacing: 6) {
-                                    Image(systemName: "checklist")
-                                    Text("Actions")
+                            HStack(spacing: 8) {
+                                Button {
+                                    selectAll()
+                                } label: {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "checkmark.circle")
+                                            .font(.caption)
+                                        Text("Select All")
+                                            .font(.caption)
+                                    }
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 6)
+                                    .background(Color.blue.opacity(0.1))
+                                    .foregroundStyle(.blue)
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
                                 }
-                                .font(.subheadline)
-                                .fontWeight(.medium)
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 8)
-                                .background(Color.blue.opacity(0.1))
-                                .foregroundStyle(.blue)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
+                                .buttonStyle(.plain)
+
+                                Button {
+                                    deselectAll()
+                                } label: {
+                                    HStack(spacing: 4) {
+                                        Image(systemName: "circle")
+                                            .font(.caption)
+                                        Text("Clear")
+                                            .font(.caption)
+                                    }
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 6)
+                                    .background(Color.secondary.opacity(0.1))
+                                    .foregroundStyle(.secondary)
+                                    .clipShape(RoundedRectangle(cornerRadius: 6))
+                                }
+                                .buttonStyle(.plain)
                             }
-                            .buttonStyle(.plain)
 
                             Spacer()
 
@@ -138,15 +156,6 @@ struct FolderSelectionView: View {
             }
             .onAppear {
                 loadFolderStructure()
-            }
-            .confirmationDialog("Selection Actions", isPresented: $showingActions) {
-                Button("Select All") {
-                    selectAll()
-                }
-                Button("Deselect All") {
-                    deselectAll()
-                }
-                Button("Cancel", role: .cancel) {}
             }
         }
     }
