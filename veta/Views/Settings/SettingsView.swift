@@ -128,26 +128,6 @@ struct SettingsView: View {
                         Text("1.0.0")
                             .foregroundStyle(.secondary)
                     }
-
-                    Link(destination: URL(string: "https://github.com/antonovdmitriy/veta")!) {
-                        HStack {
-                            Label("GitHub Repository", systemImage: "link")
-                            Spacer()
-                            Image(systemName: "arrow.up.right")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
-
-                    Link(destination: URL(string: "https://github.com/antonovdmitriy/veta/issues")!) {
-                        HStack {
-                            Label("Report Issue", systemImage: "exclamationmark.bubble")
-                            Spacer()
-                            Image(systemName: "arrow.up.right")
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-                    }
                 } header: {
                     Text("About")
                 }
